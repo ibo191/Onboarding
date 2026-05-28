@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://www.autoskolabubu.cz/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://www.autoskolabubu.cz/kurzy</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.autoskolabubu.cz/kurzy/ridicak-skupina-b</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.autoskolabubu.cz/kurzy/ridicak-skupina-b-automat</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.autoskolabubu.cz/kurzy/ridicak-skupina-a</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.autoskolabubu.cz/kurzy/ridicak-skupina-a2</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.autoskolabubu.cz/kurzy/ridicak-skupina-a1</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.autoskolabubu.cz/kurzy/ridicak-skupina-am</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.autoskolabubu.cz/kurzy/kondicni-jizdy</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.autoskolabubu.cz/ridicak-skupina-b</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.autoskolabubu.cz/ridicak-na-automat</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.autoskolabubu.cz/motorky</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
