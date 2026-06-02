@@ -2,8 +2,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const baseUrl = "https://www.autoskolabubu.cz";
-const cssVersion = "14";
-const appVersion = "17";
+const cssVersion = "15";
+const appVersion = "18";
 
 const organization = {
   "@type": "DrivingSchool",
@@ -152,11 +152,12 @@ const courses = [
     path: "/kurzy/ridicak-skupina-b",
     legacy: ["/ridicak-skupina-b"],
     group: "B",
-    price: "24900",
+    price: "20000",
     title: "Řidičák skupiny B | Autoškola BuBu Praha, Kladno, Statenice",
     description: "Získejte řidičák skupiny B bez stresu. Klidný výcvik, lidský přístup a příprava na reálný provoz v Autoškole BuBu.",
     h1: "Řidičák skupiny B bez stresu",
-    lead: "Kurz pro osobní auto vedeme klidně, srozumitelně a krok za krokem.",
+    lead: "Kurz pro osobní auto vedeme klidně, srozumitelně a krok za krokem. Auto Základ začíná podle pobočky od 20 000 Kč, Auto Jistota přidává víc prostoru na přípravu.",
+    sections: ["Auto Základ", "Auto Jistota", "Praha 8 - Střížkov", "Kladno", "Statenice", "Studentský portál"],
     faq: [["Jak dlouho trvá kurz skupiny B?", "Nejčastěji několik týdnů podle kapacity a vašich časových možností."], ["Musím umět něco před první jízdou?", "Nemusíte. Kurz je vhodný i pro úplné začátečníky."]],
   },
   {
@@ -168,7 +169,19 @@ const courses = [
     description: "Řidičák na automat v Autoškole BuBu. Méně stresu, klidný přístup a výcvik na pobočce Praha 8 - Střížkov.",
     h1: "Řidičák na automat bez zbytečného stresu",
     lead: "Automat je praktická volba, když chcete mít víc prostoru na provoz.",
+    sections: ["Auto Základ 24 900 Kč", "Auto Jistota 28 900 Kč", "Praha 8 - Střížkov", "Studentský portál"],
     faq: [["Budu moct řídit manuál?", "Po zkoušce na automat můžete řídit auta s automatickou převodovkou."], ["Kde kurz probíhá?", "Kurz nabízíme na pobočce Praha 8 - Střížkov."]],
+  },
+  {
+    path: "/kurzy/l17",
+    group: "L17",
+    price: "20000",
+    title: "Řidičák od 17 let L17 | Autoškola BuBu Praha a Kladno",
+    description: "Kurz skupiny B v režimu L17 v Autoškole BuBu. Přehledný postup, mentor, studentský portál a klidná příprava bez stresu.",
+    h1: "Řidičák skupiny B v režimu L17",
+    lead: "Kurz pro mladé řidiče od 17 let s mentorem. Auto Základ začíná podle pobočky od 20 000 Kč a Auto Jistota přidává víc prostoru na praxi.",
+    sections: ["Auto Základ", "Auto Jistota", "Mentor", "Studentský portál", "Praha 8 - Střížkov", "Kladno"],
+    faq: [["Co znamená režim L17?", "Možnost získat řidičské oprávnění skupiny B od 17 let za splnění zákonných podmínek a s mentorem."], ["Kde L17 nabízíte?", "Podle aktuální kapacity na pobočkách Praha 8 - Střížkov a Kladno."]],
   },
   {
     path: "/kurzy/ridicak-skupina-a",
@@ -420,6 +433,8 @@ function html(page) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css?v=${cssVersion}" />
+    <style>.seo-prerender{position:fixed;inset:0;opacity:0;pointer-events:none;overflow:hidden}noscript+style{display:none}</style>
+    <noscript><style>.seo-prerender{position:static;opacity:1;pointer-events:auto;overflow:visible;padding:40px 20px;max-width:900px;margin:0 auto;font-family:Montserrat,system-ui,sans-serif}</style></noscript>
     <script type="application/ld+json">${JSON.stringify(schemaForPage(page))}</script>
   </head>
   <body>
