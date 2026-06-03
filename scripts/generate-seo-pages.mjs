@@ -3,7 +3,7 @@ import path from "node:path";
 
 const baseUrl = "https://www.autoskolabubu.cz";
 const cssVersion = "15";
-const appVersion = "18";
+const appVersion = "19";
 
 const organization = {
   "@type": "DrivingSchool",
