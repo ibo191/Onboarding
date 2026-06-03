@@ -2,8 +2,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const baseUrl = "https://www.autoskolabubu.cz";
-const cssVersion = "21";
-const appVersion = "25";
+const cssVersion = "22";
+const appVersion = "26";
 
 const organization = {
   "@type": "DrivingSchool",
