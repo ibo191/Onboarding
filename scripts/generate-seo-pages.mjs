@@ -2,8 +2,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const baseUrl = "https://www.autoskolabubu.cz";
-const cssVersion = "18";
-const appVersion = "22";
+const cssVersion = "19";
+const appVersion = "23";
 
 const organization = {
   "@type": "DrivingSchool",
@@ -169,7 +169,7 @@ const courses = [
     description: "Řidičák na automat v Autoškole BuBu. Méně stresu, klidný přístup a výcvik na pobočce Praha 8 - Střížkov.",
     h1: "Řidičák na automat bez zbytečného stresu",
     lead: "Automat je praktická volba, když chcete mít víc prostoru na provoz.",
-    sections: ["Auto Základ 24 900 Kč", "Auto Jistota 28 900 Kč", "Praha 8 - Střížkov", "Studentský portál"],
+    sections: ["Auto Základ 24 900 Kč", "Auto Jistota 32 900 Kč", "Praha 8 - Střížkov", "Studentský portál"],
     faq: [["Budu moct řídit manuál?", "Po zkoušce na automat můžete řídit auta s automatickou převodovkou."], ["Kde kurz probíhá?", "Kurz nabízíme na pobočce Praha 8 - Střížkov."]],
   },
   {
