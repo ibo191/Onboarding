@@ -3,7 +3,8 @@ import path from "node:path";
 
 const baseUrl = "https://www.autoskolabubu.cz";
 const cssVersion = "22";
-const appVersion = "26";
+const appVersion = "27";
+const supabaseVersion = "1";
 
 const organization = {
   "@type": "DrivingSchool",
@@ -440,6 +441,7 @@ function html(page) {
   <body>
     <div id="app">${prerenderContent(page)}</div>
     <script defer src="/_vercel/insights/script.js"></script>
+    <script src="/supabase-client.js?v=${supabaseVersion}"></script>
     <script src="/app.js?v=${appVersion}"></script>
   </body>
 </html>
