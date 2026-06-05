@@ -2,7 +2,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const baseUrl = "https://www.autoskolabubu.cz";
-const cssVersion = "23";
+const cssVersion = "24";
 const appVersion = "28";
 const supabaseVersion = "2";
 
