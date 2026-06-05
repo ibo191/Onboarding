@@ -128,7 +128,7 @@ export default async function handler(req, res) {
         headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
         body: JSON.stringify(rowFromApplication(application, source)),
       });
-      return json(res, 200, { ok: true, mail: mailResult });
+      return json(res, 200, { ok: true, mail: application.mail || mailResult });
     }
     return json(res, 405, { error: "Method not allowed" });
   } catch (error) {
