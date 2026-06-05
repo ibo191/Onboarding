@@ -43,11 +43,17 @@ Projekt je pripravený na postupné napojenie databázy Supabase bez zmeny stack
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `PUBLIC_SITE_URL` napr. `https://www.autoskolabubu.cz`
-   - `RESEND_API_KEY` pre odosielanie magic linkov e-mailom
-   - `MAGIC_LINK_FROM_EMAIL` napr. `Autoškola BuBu <noreply@autoskolabubu.cz>`
+   - `SMTP_HOST` server odosielanej pošty od WEDOS
+   - `SMTP_PORT` najčastejšie `587`
+   - `SMTP_SECURE` najčastejšie `false` pri porte 587, `true` pri porte 465
+   - `SMTP_USER` e-mailová schránka alebo SMTP používateľ
+   - `SMTP_PASS` heslo do SMTP schránky
+   - `MAIL_FROM` napr. `Autoškola BuBu <info@autoskolabubu.cz>`
+   - `ORDERS_EMAIL` napr. `objednavky@autoskolabubu.cz`
+   - `RESEND_API_KEY` voliteľný fallback, ak SMTP nie je nastavené
 4. Spustite redeploy vo Verceli.
 
-Po nastavení sa objednávky z webu, študentský portál a admin portál ukladajú do tabuľky `applications`. Magic linky sa ukladajú do `magic_links` iba ako hash tokenu a sú jednorazové s platnosťou 24 hodín. Cookie rozhodnutia sa ukladajú do `cookie_consents` s hashovanou IP adresou.
+Po nastavení sa objednávky z webu, študentský portál a admin portál ukladajú do tabuľky `applications`. Magic linky sa ukladajú do `magic_links` iba ako hash tokenu a sú jednorazové s platnosťou 24 hodín. Objednávky sa zároveň posielajú do objednávkovej schránky, študentovi chodí potvrdenie a admin správy v chate aj schvaľovanie odosielajú e-mailové upozornenia študentovi. Cookie rozhodnutia sa ukladajú do `cookie_consents` s hashovanou IP adresou.
 
 ### Produkčný ďalší krok
 

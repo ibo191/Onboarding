@@ -82,6 +82,7 @@
     fetchWebApplications: () => fetchApplications("web"),
     fetchPortalApplications: () => fetchApplications("onboarding"),
     createMagicLink: (applicationId, email) => apiPost("/api/create-magic-link", { applicationId, email }),
+    notifyStudent: (applicationId, type, message) => apiPost("/api/notify-student", { applicationId, type, message }),
     setStudentPassword: (token, password) => apiPost("/api/set-student-password", { token, password }),
     studentLogin: (email, password) => apiPost("/api/student-login", { email, password }),
     saveConsent: (decision) => apiPost("/api/consent", decision),
