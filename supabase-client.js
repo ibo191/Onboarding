@@ -9,7 +9,7 @@
       source,
       status: application.status || "new",
       course_id: application.courseId || application.course || applicant.targetGroups || "",
-      student_email: applicant.email || application.credentials?.email || "",
+      student_email: String(applicant.email || application.credentials?.email || "").toLowerCase(),
       student_name: [applicant.firstName, applicant.lastName].filter(Boolean).join(" "),
       phone: applicant.phone || "",
       data: application,
@@ -48,24 +48,31 @@
 
   async function upsertApplication(application, source) {
     if (!application?.id) return null;
-    return request("applications?on_conflict=id,source", {
-      method: "POST",
-      headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
-      body: JSON.stringify(rowFromApplication(application, source)),
-    }).catch((error) => {
+    return apiPost("/api/applications", { source, application }).catch((error) => {
       console.warn("Supabase sync failed", error);
       return null;
     });
   }
 
   async function fetchApplications(source) {
-    const rows = await request(
-      `applications?select=id,source,status,data,updated_at&source=eq.${encodeURIComponent(source)}&order=updated_at.desc`,
-    ).catch((error) => {
+    const payload = await fetch(`/api/applications?source=${encodeURIComponent(source)}`, { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : { applications: [] }))
+      .catch((error) => {
       console.warn("Supabase load failed", error);
       return null;
     });
-    return Array.isArray(rows) ? rows.map((row) => row.data).filter(Boolean) : [];
+    return Array.isArray(payload?.applications) ? payload.applications : [];
+  }
+
+  async function apiPost(path, body) {
+    const response = await fetch(path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body || {}),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || `Request failed: ${response.status}`);
+    return payload;
   }
 
   window.BuBuSupabase = {
@@ -74,6 +81,10 @@
     upsertPortalApplication: (application) => upsertApplication(application, "onboarding"),
     fetchWebApplications: () => fetchApplications("web"),
     fetchPortalApplications: () => fetchApplications("onboarding"),
+    createMagicLink: (applicationId, email) => apiPost("/api/create-magic-link", { applicationId, email }),
+    setStudentPassword: (token, password) => apiPost("/api/set-student-password", { token, password }),
+    studentLogin: (email, password) => apiPost("/api/student-login", { email, password }),
+    saveConsent: (decision) => apiPost("/api/consent", decision),
     isEnabled: async () => Boolean((await getConfig()).enabled),
   };
 })();

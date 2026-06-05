@@ -33,7 +33,7 @@ Potom otvorte `http://127.0.0.1:4173/`.
 
 ## Supabase
 
-Projekt je pripravený na postupné napojenie databázy Supabase bez zmeny stacku a bez npm balíkov. Statický web používa REST API klienta v `supabase-client.js` a konfiguračný endpoint `api/supabase-config.js`.
+Projekt je pripravený na postupné napojenie databázy Supabase bez zmeny stacku a bez npm balíkov. Verejný web komunikuje so serverless API vo Verceli, ktoré používa Supabase service role key na bezpečnejšie zapisovanie dát.
 
 ### Nastavenie
 
@@ -41,15 +41,18 @@ Projekt je pripravený na postupné napojenie databázy Supabase bez zmeny stack
 2. V Supabase SQL editore spustite obsah súboru `supabase/schema.sql`.
 3. Vo Verceli nastavte environment variables:
    - `SUPABASE_URL`
-   - `SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `PUBLIC_SITE_URL` napr. `https://www.autoskolabubu.cz`
+   - `RESEND_API_KEY` pre odosielanie magic linkov e-mailom
+   - `MAGIC_LINK_FROM_EMAIL` napr. `Autoškola BuBu <noreply@autoskolabubu.cz>`
 4. Spustite redeploy vo Verceli.
 
-Po nastavení sa objednávky z webu, študentský portál a admin portál ukladajú do tabuľky `applications`. Ak env premenné nie sú nastavené, web ďalej funguje lokálne cez `localStorage`, aby sa prototyp nezastavil.
+Po nastavení sa objednávky z webu, študentský portál a admin portál ukladajú do tabuľky `applications`. Magic linky sa ukladajú do `magic_links` iba ako hash tokenu a sú jednorazové s platnosťou 24 hodín. Cookie rozhodnutia sa ukladajú do `cookie_consents` s hashovanou IP adresou.
 
 ### Produkčný ďalší krok
 
-Aktuálna schéma používa jednoduché RLS pravidlá vhodné na testovanie prototypu. Pred ostrou prevádzkou treba doplniť Supabase Auth, role pre admina/študenta, Storage bucket pre dokumenty a prísnejšie RLS politiky podľa prihláseného používateľa.
+Pred ostrou prevádzkou treba ešte doplniť plnohodnotnú admin session ochranu, Storage bucket pre dokumenty a audit log. Service role key musí zostať iba vo Vercel environment variables a nikdy nesmie byť vložený do frontendového JavaScriptu.
 
 ## Poznámka
 
-Toto je postupný prechod z prototypu na produkčný systém. Databázové jadro je pripravené, ale ostrá verzia bude ešte potrebovať autentifikáciu, e-mailové odosielanie magic linkov, bezpečné úložisko dokumentov, platobnú bránu a presné napojenie na Moje autoškola.
+Toto je postupný prechod z prototypu na produkčný systém. Databázové jadro, reálne magic linky a cookie consent log sú pripravené, ale ostrá verzia bude ešte potrebovať bezpečné úložisko dokumentov, platobnú bránu a presné napojenie na Moje autoškola.
