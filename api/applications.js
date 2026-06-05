@@ -1,8 +1,12 @@
 import { json, readBody, supabaseRequest } from "./_supabase.js";
 import { mailLayout, sendMail, textFromHtml } from "./_mail.js";
 
+function env(name, fallback = "") {
+  return String(process.env[name] || fallback).trim();
+}
+
 function ordersEmail() {
-  return process.env.ORDERS_EMAIL || process.env.ADMIN_EMAIL || "objednavky@autoskolabubu.cz";
+  return env("ORDERS_EMAIL", env("ADMIN_EMAIL", "objednavky@autoskolabubu.cz"));
 }
 
 function applicantFromApplication(application) {

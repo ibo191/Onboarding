@@ -1,7 +1,11 @@
 import { json } from "./_supabase.js";
 
+function env(name, fallback = "") {
+  return String(process.env[name] || fallback).trim();
+}
+
 function present(name) {
-  return Boolean(process.env[name]);
+  return Boolean(env(name));
 }
 
 export default function handler(req, res) {
@@ -9,12 +13,12 @@ export default function handler(req, res) {
   return json(res, 200, {
     smtpConfigured: present("SMTP_HOST") && present("SMTP_USER") && present("SMTP_PASS"),
     smtpHost: present("SMTP_HOST"),
-    smtpPort: process.env.SMTP_PORT || "",
-    smtpSecure: process.env.SMTP_SECURE || "",
+    smtpPort: env("SMTP_PORT"),
+    smtpSecure: env("SMTP_SECURE"),
     smtpUser: present("SMTP_USER"),
     smtpPass: present("SMTP_PASS"),
-    mailFrom: process.env.MAIL_FROM || process.env.MAGIC_LINK_FROM_EMAIL || "",
-    ordersEmail: process.env.ORDERS_EMAIL || process.env.ADMIN_EMAIL || "objednavky@autoskolabubu.cz",
+    mailFrom: env("MAIL_FROM", env("MAGIC_LINK_FROM_EMAIL")),
+    ordersEmail: env("ORDERS_EMAIL", env("ADMIN_EMAIL", "objednavky@autoskolabubu.cz")),
     resendFallbackConfigured: present("RESEND_API_KEY"),
   });
 }

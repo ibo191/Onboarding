@@ -1,22 +1,26 @@
 import nodemailer from "nodemailer";
 
+function env(name, fallback = "") {
+  return String(process.env[name] || fallback).trim();
+}
+
 function fromAddress() {
-  return process.env.MAIL_FROM || process.env.MAGIC_LINK_FROM_EMAIL || "Autoškola BuBu <info@autoskolabubu.cz>";
+  return env("MAIL_FROM", env("MAGIC_LINK_FROM_EMAIL", "Autoškola BuBu <info@autoskolabubu.cz>"));
 }
 
 function smtpReady() {
-  return Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
+  return Boolean(env("SMTP_HOST") && env("SMTP_USER") && env("SMTP_PASS"));
 }
 
 function smtpTransport() {
-  const secure = String(process.env.SMTP_SECURE || "false").toLowerCase() === "true";
+  const secure = env("SMTP_SECURE", "false").toLowerCase() === "true";
   return nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT || (secure ? 465 : 587)),
+    host: env("SMTP_HOST"),
+    port: Number(env("SMTP_PORT", secure ? "465" : "587")),
     secure,
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+      user: env("SMTP_USER"),
+      pass: env("SMTP_PASS"),
     },
     requireTLS: !secure,
   });
