@@ -46,9 +46,9 @@
     return response.json();
   }
 
-  async function upsertApplication(application, source) {
+  async function upsertApplication(application, source, options = {}) {
     if (!application?.id) return null;
-    return apiPost("/api/applications", { source, application }).catch((error) => {
+    return apiPost("/api/applications", { source, application, ...options }).catch((error) => {
       console.warn("Supabase sync failed", error);
       return null;
     });
@@ -77,7 +77,7 @@
 
   window.BuBuSupabase = {
     getConfig,
-    upsertWebApplication: (application) => upsertApplication(application, "web"),
+    upsertWebApplication: (application, options) => upsertApplication(application, "web", options),
     upsertPortalApplication: (application) => upsertApplication(application, "onboarding"),
     fetchWebApplications: () => fetchApplications("web"),
     fetchPortalApplications: () => fetchApplications("onboarding"),

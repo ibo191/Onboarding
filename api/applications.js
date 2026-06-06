@@ -251,10 +251,10 @@ export default async function handler(req, res) {
       return json(res, 200, { applications: Array.isArray(rows) ? rows.map((row) => row.data).filter(Boolean) : [] });
     }
     if (req.method === "POST") {
-      const { source, application } = await readBody(req);
+      const { source, application, sendEmails = false } = await readBody(req);
       if (!["web", "onboarding"].includes(source) || !application?.id) return json(res, 400, { error: "Invalid application payload" });
       let mailResult = null;
-      if (source === "web" && (application.status || "new") === "new") {
+      if (sendEmails === true && source === "web" && (application.status || "new") === "new") {
         try {
           mailResult = await sendOrderEmails(application, req);
         } catch (error) {
