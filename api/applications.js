@@ -1,4 +1,4 @@
-import { json, readBody, supabaseRequest } from "./_supabase.js";
+import { json, publicBaseUrl, randomToken, readBody, sha256, supabaseRequest } from "./_supabase.js";
 import { mailLayout, sendMail, textFromHtml } from "./_mail.js";
 
 function env(name, fallback = "") {
@@ -89,7 +89,40 @@ function stepsList(items) {
     </div>`;
 }
 
-async function sendOrderEmails(application) {
+async function createPortalAccess(application, email, req) {
+  if (!application?.id || !email) return null;
+  const token = randomToken(32);
+  const tokenHash = sha256(token);
+  const normalizedEmail = String(email).toLowerCase();
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+  await supabaseRequest(`magic_links?application_id=eq.${encodeURIComponent(application.id)}&email=eq.${encodeURIComponent(normalizedEmail)}&used_at=is.null`, {
+    method: "PATCH",
+    headers: { Prefer: "return=minimal" },
+    body: JSON.stringify({ used_at: new Date().toISOString() }),
+  });
+  await supabaseRequest("magic_links", {
+    method: "POST",
+    headers: { Prefer: "return=minimal" },
+    body: JSON.stringify({
+      token_hash: tokenHash,
+      application_id: application.id,
+      email: normalizedEmail,
+      expires_at: expiresAt,
+    }),
+  });
+  const magicUrl = `${publicBaseUrl(req)}/onboarding/index.html#magic=${encodeURIComponent(token)}`;
+  application.credentials = {
+    ...(application.credentials || {}),
+    email: normalizedEmail,
+    magicLinkRequestedAt: new Date().toISOString(),
+    magicLinkExpiresAt: expiresAt,
+    magicLinkEmailSent: true,
+    magicLinkPreviewUrl: process.env.NODE_ENV === "production" ? "" : magicUrl,
+  };
+  return { magicUrl, expiresAt };
+}
+
+async function sendOrderEmails(application, req) {
   if (!application || application.mail?.orderEmailsSentAt) return { skipped: true };
   const applicant = applicantFromApplication(application);
   const email = String(applicant.email || application.credentials?.email || "").trim();
@@ -109,6 +142,7 @@ async function sendOrderEmails(application) {
   ];
   const table = detailsTable(rows);
   const result = { customer: null, admin: null, errors: {} };
+  let portalAccess = null;
 
   const adminHtml = mailLayout({
     title: "Nová přihláška do kurzu",
@@ -127,6 +161,7 @@ async function sendOrderEmails(application) {
     result.admin = await sendMail({
       to: ordersEmail(),
       subject: `Nová přihláška: ${fullName} - ${course.title} | Autoškola BuBu`,
+      ...(email ? { replyTo: `${fullName} <${email}>` } : {}),
       html: adminHtml,
       text: textFromHtml(adminHtml),
     });
@@ -135,9 +170,16 @@ async function sendOrderEmails(application) {
   }
 
   if (email) {
+    try {
+      portalAccess = await createPortalAccess(application, email, req);
+    } catch (error) {
+      result.errors.magicLink = error.message;
+    }
     const customerHtml = mailLayout({
       title: "Přihláška je přijatá",
       intro: `Dobrý den, ${escapeHtml(fullName)}. Děkujeme za rezervaci místa v Autoškole BuBu. Přihlásil/a jste se do kurzu ${escapeHtml(course.title)}.`,
+      buttonUrl: portalAccess?.magicUrl || siteUrl("/student"),
+      buttonText: portalAccess?.magicUrl ? "Nastavit heslo do portálu" : "Otevřít studentský portál",
       children: `
         ${infoBox("Vybraný kurz", `${course.title}${course.packageName ? ` · ${course.packageName}` : ""}`)}
         ${detailsTable([
@@ -149,10 +191,11 @@ async function sendOrderEmails(application) {
         ])}
         <h2 style="margin:26px 0 10px;font-size:20px;color:#10131a">Co bude následovat</h2>
         ${stepsList([
-          "Pošleme vám přístup do studentského portálu.",
+          "Klikněte na tlačítko a nastavte si heslo do studentského portálu.",
           "V portálu doplníte údaje a nahrajete potřebné dokumenty.",
           "Autoškola údaje zkontroluje a ozve se vám s dalším postupem.",
         ])}
+        ${portalAccess?.magicUrl ? `<p style="margin:16px 0 0;color:#667085;font-size:13px">Odkaz pro nastavení hesla je platný 24 hodin. Přihlašovací jméno bude váš e-mail.</p>` : ""}
         <p style="margin:20px 0 0;color:#475467">Nemusíte se ničeho bát. Celým procesem vás provedeme krok za krokem.</p>
       `,
       footer: "Autoškola BuBu · Řidičák bez stresu",
@@ -179,6 +222,7 @@ async function sendOrderEmails(application) {
     ordersEmail: ordersEmail(),
     ...(result.errors.admin ? { adminOrderEmailError: result.errors.admin } : {}),
     ...(result.errors.customer ? { customerOrderEmailError: result.errors.customer } : {}),
+    ...(result.errors.magicLink ? { magicLinkError: result.errors.magicLink } : {}),
   };
   return result;
 }
@@ -212,7 +256,7 @@ export default async function handler(req, res) {
       let mailResult = null;
       if (source === "web" && (application.status || "new") === "new") {
         try {
-          mailResult = await sendOrderEmails(application);
+          mailResult = await sendOrderEmails(application, req);
         } catch (error) {
           application.mail = {
             ...(application.mail || {}),
@@ -228,7 +272,7 @@ export default async function handler(req, res) {
         headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
         body: JSON.stringify(rowFromApplication(application, source)),
       });
-      return json(res, 200, { ok: true, mail: application.mail || mailResult });
+      return json(res, 200, { ok: true, mail: application.mail || mailResult, credentials: application.credentials || null });
     }
     return json(res, 405, { error: "Method not allowed" });
   } catch (error) {
