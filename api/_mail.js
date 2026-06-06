@@ -69,19 +69,23 @@ export async function sendMail(message) {
 
 export function mailLayout({ title, intro, buttonUrl, buttonText, children = "", footer = "" }) {
   const safeButton = buttonUrl && buttonText
-    ? `<p style="margin:26px 0"><a href="${buttonUrl}" style="display:inline-block;background:#4AB9AB;color:#fff;padding:14px 20px;border-radius:10px;text-decoration:none;font-weight:800">${buttonText}</a></p>`
+    ? `<p style="margin:28px 0 6px"><a href="${buttonUrl}" style="display:inline-block;background:#4AB9AB;color:#ffffff;padding:14px 22px;border-radius:12px;text-decoration:none;font-weight:800;box-shadow:0 10px 24px rgba(74,185,171,.24)">${buttonText}</a></p>`
     : "";
   return `
-    <div style="margin:0;padding:0;background:#f4f8f8">
-      <div style="max-width:640px;margin:0 auto;padding:28px 16px;font-family:Montserrat,Arial,sans-serif;color:#10131a;line-height:1.55">
-        <div style="padding:26px;border:1px solid #d7e2ea;border-radius:14px;background:#ffffff">
-          <p style="margin:0 0 10px;color:#2F5AA6;font-weight:900;text-transform:uppercase;font-size:12px">Autoškola BuBu</p>
-          <h1 style="margin:0 0 14px;font-size:28px;line-height:1.15">${title}</h1>
-          <p style="margin:0 0 18px;color:#475467">${intro}</p>
+    <div style="margin:0;padding:0;background:#eef7f6">
+      <div style="max-width:680px;margin:0 auto;padding:32px 16px;font-family:Montserrat,Arial,sans-serif;color:#10131a;line-height:1.55">
+        <div style="margin:0 0 14px;padding:0 4px;color:#2F5AA6;font-weight:900;font-size:18px;letter-spacing:.01em">Autoškola BuBu</div>
+        <div style="overflow:hidden;border:1px solid #d7e2ea;border-radius:20px;background:#ffffff;box-shadow:0 18px 48px rgba(47,90,166,.10)">
+          <div style="height:8px;background:linear-gradient(90deg,#4AB9AB,#2F5AA6)"></div>
+          <div style="padding:30px 28px 26px">
+          <p style="display:inline-block;margin:0 0 14px;padding:6px 10px;border-radius:999px;background:#e9f8f6;color:#168d80;font-weight:900;text-transform:uppercase;font-size:12px">Řidičák bez stresu</p>
+          <h1 style="margin:0 0 14px;font-size:30px;line-height:1.15;color:#10131a">${title}</h1>
+          <p style="margin:0 0 20px;color:#475467;font-size:16px">${intro}</p>
           ${safeButton}
           ${children}
+          </div>
         </div>
-        <p style="margin:16px 0 0;color:#667085;font-size:12px">${footer || "Tento e-mail posílá Autoškola BuBu automaticky."}</p>
+        <p style="margin:16px 4px 0;color:#667085;font-size:12px">${footer || "Tento e-mail posílá Autoškola BuBu automaticky."}</p>
       </div>
     </div>`;
 }
