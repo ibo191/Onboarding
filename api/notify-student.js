@@ -31,7 +31,7 @@ async function findApplication(applicationId) {
 }
 
 function notificationContent(type, message, baseUrl) {
-  const portalUrl = `${baseUrl}/student`;
+  const portalUrl = `${baseUrl}/onboarding/index.html`;
   const safeMessage = message
     ? `<div style="margin:18px 0;padding:14px 16px;border-radius:12px;background:#f4f8f8;border:1px solid #d7e2ea;color:#344054">${escapeHtml(message)}</div>`
     : "";

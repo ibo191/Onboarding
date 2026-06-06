@@ -13,6 +13,10 @@ function siteUrl(path = "") {
   return `${env("PUBLIC_SITE_URL", "https://www.autoskolabubu.cz")}${path}`;
 }
 
+function portalUrl() {
+  return siteUrl("/onboarding/index.html");
+}
+
 function escapeHtml(value = "") {
   return String(value)
     .replace(/&/g, "&amp;")
@@ -172,15 +176,17 @@ async function sendOrderEmails(application, req) {
   if (email) {
     try {
       portalAccess = await createPortalAccess(application, email, req);
+      result.portalSetupUrl = portalAccess?.magicUrl || "";
     } catch (error) {
       result.errors.magicLink = error.message;
     }
     const customerHtml = mailLayout({
       title: "Přihláška je přijatá",
-      intro: `Dobrý den, ${escapeHtml(fullName)}. Děkujeme za rezervaci místa v Autoškole BuBu. Přihlásil/a jste se do kurzu ${escapeHtml(course.title)}.`,
-      buttonUrl: portalAccess?.magicUrl || siteUrl("/student"),
+      intro: `Dobrý den, ${escapeHtml(fullName)}. Děkujeme za rezervaci místa v Autoškole BuBu. Přihlásil/a jste se do kurzu ${escapeHtml(course.title)}. Váš další krok je otevřít studentský portál, nastavit si heslo a doplnit údaje k přihlášce.`,
+      buttonUrl: portalAccess?.magicUrl || portalUrl(),
       buttonText: portalAccess?.magicUrl ? "Nastavit heslo do portálu" : "Otevřít studentský portál",
       children: `
+        ${infoBox("Co teď musíte udělat", "Otevřete studentský portál, nastavte si heslo a vyplňte tam údaje. Bez doplnění údajů a dokumentů nemůžeme přihlášku posunout dál.")}
         ${infoBox("Vybraný kurz", `${course.title}${course.packageName ? ` · ${course.packageName}` : ""}`)}
         ${detailsTable([
           ["Kurz", course.title],
@@ -191,8 +197,9 @@ async function sendOrderEmails(application, req) {
         ])}
         <h2 style="margin:26px 0 10px;font-size:20px;color:#10131a">Co bude následovat</h2>
         ${stepsList([
-          "Klikněte na tlačítko a nastavte si heslo do studentského portálu.",
-          "V portálu doplníte údaje a nahrajete potřebné dokumenty.",
+          "Klikněte na tlačítko a otevřete studentský portál.",
+          "Nastavte si heslo a doplňte údaje k přihlášce.",
+          "Nahrajte potřebné dokumenty.",
           "Autoškola údaje zkontroluje a ozve se vám s dalším postupem.",
         ])}
         ${portalAccess?.magicUrl ? `<p style="margin:16px 0 0;color:#667085;font-size:13px">Odkaz pro nastavení hesla je platný 24 hodin. Přihlašovací jméno bude váš e-mail.</p>` : ""}
@@ -272,7 +279,7 @@ export default async function handler(req, res) {
         headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
         body: JSON.stringify(rowFromApplication(application, source)),
       });
-      return json(res, 200, { ok: true, mail: application.mail || mailResult, credentials: application.credentials || null });
+      return json(res, 200, { ok: true, mail: application.mail || mailResult, credentials: application.credentials || null, portalSetupUrl: mailResult?.portalSetupUrl || "" });
     }
     return json(res, 405, { error: "Method not allowed" });
   } catch (error) {
