@@ -1,4 +1,4 @@
-import { json, publicBaseUrl, readBody, supabaseRequest } from "./_supabase.js";
+import { json, portalBaseUrl, readBody, supabaseRequest } from "./_supabase.js";
 import { mailLayout, sendMail, textFromHtml } from "./_mail.js";
 
 function escapeHtml(value = "") {
@@ -80,7 +80,7 @@ export default async function handler(req, res) {
     const email = studentEmail(application);
     if (!email) return json(res, 400, { error: "Student e-mail is missing" });
 
-    const content = notificationContent(type, message, publicBaseUrl(req));
+    const content = notificationContent(type, message, portalBaseUrl(req));
     const html = mailLayout({
       title: content.title,
       intro: `Dobrý den, ${escapeHtml(studentName(application))}. ${content.intro}`,

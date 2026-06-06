@@ -43,6 +43,7 @@ Projekt je pripravený na postupné napojenie databázy Supabase bez zmeny stack
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `PUBLIC_SITE_URL` napr. `https://www.autoskolabubu.cz`
+   - `PORTAL_BASE_URL` napr. `https://onboarding-one-delta.vercel.app` pre odkazy na študentský portál a magic linky
    - `SMTP_HOST` server odosielanej pošty od WEDOS
    - `SMTP_PORT` najčastejšie `587`
    - `SMTP_SECURE` najčastejšie `false` pri porte 587, `true` pri porte 465

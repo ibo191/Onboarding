@@ -68,6 +68,18 @@ export function publicBaseUrl(req) {
   return process.env.PUBLIC_SITE_URL || `https://${req.headers.host || "www.autoskolabubu.cz"}`;
 }
 
+export function portalBaseUrl(req) {
+  const base =
+    process.env.PORTAL_BASE_URL ||
+    process.env.ONBOARDING_BASE_URL ||
+    "https://onboarding-one-delta.vercel.app";
+  return String(base)
+    .trim()
+    .replace(/\/+$/, "")
+    .replace(/\/onboarding\/index\.html$/i, "")
+    .replace(/\/onboarding$/i, "");
+}
+
 export function clientIp(req) {
   const forwarded = req.headers["x-forwarded-for"];
   if (typeof forwarded === "string" && forwarded) return forwarded.split(",")[0].trim();

@@ -1,4 +1,4 @@
-import { json, publicBaseUrl, randomToken, readBody, sha256, supabaseRequest } from "./_supabase.js";
+import { json, portalBaseUrl, randomToken, readBody, sha256, supabaseRequest } from "./_supabase.js";
 import { mailLayout, sendMail, textFromHtml } from "./_mail.js";
 
 async function sendMagicEmail(email, magicUrl) {
@@ -41,7 +41,7 @@ export default async function handler(req, res) {
         expires_at: expiresAt,
       }),
     });
-    const magicUrl = `${publicBaseUrl(req)}/onboarding/index.html#magic=${encodeURIComponent(token)}`;
+    const magicUrl = `${portalBaseUrl(req)}/onboarding/index.html#magic=${encodeURIComponent(token)}`;
     const emailResult = await sendMagicEmail(email, magicUrl);
     return json(res, 200, {
       ok: true,

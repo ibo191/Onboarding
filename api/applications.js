@@ -1,4 +1,4 @@
-import { json, publicBaseUrl, randomToken, readBody, sha256, supabaseRequest } from "./_supabase.js";
+import { json, portalBaseUrl, randomToken, readBody, sha256, supabaseRequest } from "./_supabase.js";
 import { mailLayout, sendMail, textFromHtml } from "./_mail.js";
 
 function env(name, fallback = "") {
@@ -14,7 +14,7 @@ function siteUrl(path = "") {
 }
 
 function portalUrl() {
-  return siteUrl("/onboarding/index.html");
+  return `${portalBaseUrl()}/onboarding/index.html`;
 }
 
 function escapeHtml(value = "") {
@@ -114,7 +114,7 @@ async function createPortalAccess(application, email, req) {
       expires_at: expiresAt,
     }),
   });
-  const magicUrl = `${publicBaseUrl(req)}/onboarding/index.html#magic=${encodeURIComponent(token)}`;
+  const magicUrl = `${portalBaseUrl(req)}/onboarding/index.html#magic=${encodeURIComponent(token)}`;
   application.credentials = {
     ...(application.credentials || {}),
     email: normalizedEmail,
