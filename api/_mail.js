@@ -53,7 +53,16 @@ export async function sendMail(message) {
   };
   if (smtpReady()) {
     const info = await smtpTransport().sendMail(normalized);
-    return { sent: true, provider: "smtp", messageId: info.messageId };
+    const accepted = Array.isArray(info.accepted) ? info.accepted : [];
+    const rejected = Array.isArray(info.rejected) ? info.rejected : [];
+    return {
+      sent: accepted.length > 0 && rejected.length === 0,
+      provider: "smtp",
+      messageId: info.messageId,
+      accepted,
+      rejected,
+      response: info.response,
+    };
   }
   return sendViaResend(normalized);
 }

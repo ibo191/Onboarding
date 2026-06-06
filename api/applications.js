@@ -38,7 +38,24 @@ async function sendOrderEmails(application) {
     ["Cena", course.price ? `${course.price} Kč` : "dle objednávky"],
   ];
   const table = `<table style="width:100%;border-collapse:collapse;margin:18px 0">${rows.map(([key, value]) => `<tr><td style="padding:8px 10px;border:1px solid #d7e2ea;color:#667085">${key}</td><td style="padding:8px 10px;border:1px solid #d7e2ea;font-weight:700">${value}</td></tr>`).join("")}</table>`;
-  const result = { customer: null, admin: null };
+  const result = { customer: null, admin: null, errors: {} };
+
+  const adminHtml = mailLayout({
+    title: "Nová objednávka z webu",
+    intro: "Na webu Autoškoly BuBu vznikla nová objednávka. Detail uvidíte v admin portálu.",
+    children: `${table}<p style="margin:18px 0 0;color:#475467">ID objednávky: <strong>${application.id}</strong></p>`,
+    footer: "Interní upozornění pro Autoškolu BuBu.",
+  });
+  try {
+    result.admin = await sendMail({
+      to: ordersEmail(),
+      subject: `Nová objednávka: ${fullName} | Autoškola BuBu`,
+      html: adminHtml,
+      text: textFromHtml(adminHtml),
+    });
+  } catch (error) {
+    result.errors.admin = error.message;
+  }
 
   if (email) {
     const customerHtml = mailLayout({
@@ -47,26 +64,17 @@ async function sendOrderEmails(application) {
       children: table,
       footer: "Objednávka je přijatá. Autoškola BuBu vás provede dalším postupem.",
     });
-    result.customer = await sendMail({
-      to: email,
-      subject: "Potvrzení objednávky | Autoškola BuBu",
-      html: customerHtml,
-      text: textFromHtml(customerHtml),
-    });
+    try {
+      result.customer = await sendMail({
+        to: email,
+        subject: "Potvrzení objednávky | Autoškola BuBu",
+        html: customerHtml,
+        text: textFromHtml(customerHtml),
+      });
+    } catch (error) {
+      result.errors.customer = error.message;
+    }
   }
-
-  const adminHtml = mailLayout({
-    title: "Nová objednávka z webu",
-    intro: "Na webu Autoškoly BuBu vznikla nová objednávka. Detail uvidíte v admin portálu.",
-    children: `${table}<p style="margin:18px 0 0;color:#475467">ID objednávky: <strong>${application.id}</strong></p>`,
-    footer: "Interní upozornění pro Autoškolu BuBu.",
-  });
-  result.admin = await sendMail({
-    to: ordersEmail(),
-    subject: `Nová objednávka: ${fullName} | Autoškola BuBu`,
-    html: adminHtml,
-    text: textFromHtml(adminHtml),
-  });
 
   const anySent = Boolean(result.admin?.sent || result.customer?.sent);
   application.mail = {
@@ -76,6 +84,8 @@ async function sendOrderEmails(application) {
       : { orderEmailSkippedAt: new Date().toISOString(), orderEmailSkippedReason: "smtp_not_configured" }),
     orderEmailProvider: result.admin?.provider || result.customer?.provider || "unknown",
     ordersEmail: ordersEmail(),
+    ...(result.errors.admin ? { adminOrderEmailError: result.errors.admin } : {}),
+    ...(result.errors.customer ? { customerOrderEmailError: result.errors.customer } : {}),
   };
   return result;
 }
