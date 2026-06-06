@@ -212,14 +212,7 @@ export default async function handler(req, res) {
       let mailResult = null;
       if (source === "web" && (application.status || "new") === "new") {
         try {
-          const existingRows = await supabaseRequest(`applications?select=data&source=eq.web&id=eq.${encodeURIComponent(application.id)}&limit=1`);
-          const existingMail = Array.isArray(existingRows) ? existingRows[0]?.data?.mail : null;
-          if (existingMail?.orderEmailsSentAt) {
-            application.mail = { ...(application.mail || {}), ...existingMail };
-            mailResult = { skipped: true, reason: "already_sent" };
-          } else {
-            mailResult = await sendOrderEmails(application);
-          }
+          mailResult = await sendOrderEmails(application);
         } catch (error) {
           application.mail = {
             ...(application.mail || {}),
