@@ -3,7 +3,7 @@ import path from "node:path";
 
 const baseUrl = "https://www.autoskolabubu.cz";
 const cssVersion = "26";
-const appVersion = "31";
+const appVersion = "32";
 const supabaseVersion = "2";
 
 const organization = {
@@ -127,34 +127,94 @@ const routes = [
 
 const locations = [
   {
-    path: "/autoskoly-praha-8",
+    path: "/strizkov",
     priority: "0.9",
-    title: "Autoškola Praha 8 | Řidičák bez stresu | Autoškola BuBu",
-    description: "Hledáte autoškolu v Praze 8? Autoškola BuBu nabízí řidičák skupiny B, automat, motorky a doplňovací jízdy s klidným přístupem.",
-    h1: "Autoškola Střížkov - řidičák bez stresu na Praze 8",
-    lead: "Pobočka Praha 8 / Střížkov je hlavní místo Autoškoly BuBu pro studenty, kteří chtějí klidný výcvik, jasný plán a přípravu na reálnou zkoušku.",
+    title: "Autoškola Praha 8 – Střížkov | Řidičák bez stresu | BuBu",
+    description: "Autoškola BuBu na Střížkově. Řidičák skupiny B bez stresu, trpěliví instruktoři a dobrá dostupnost z Proseku, Kobylis, Letňan i Ládví.",
+    h1: "Autoškola Praha 8 – Střížkov, Prosek, Kobylisy a Letňany",
+    lead: "Řidičák bez stresu v Praze 8. Trpěliví instruktoři, jasný plán výuky a výborná dostupnost metrem i MHD.",
+    body: [
+      "Střížkov je hlavní pobočka Autoškoly BuBu pro Prahu 8 a okolí. Hodí se pro studenty ze Střížkova, Proseku, Kobylis, Letňan, Ládví, Ďáblic i Prahy 9, kteří chtějí výcvik bez křiku a s přípravou na reálnou zkoušku.",
+      "Na pobočce řešíme skupinu B, BL17 i kondiční jízdy podle aktuální kapacity. Po online přihlášce vám vysvětlíme další postup a pomůžeme vybrat správný balíček.",
+    ],
+    sections: ["Pro koho je pobočka ideální", "Kde výuka probíhá", "Kurzy na této pobočce", "Jak probíhá kurz", "Proč BuBu", "Recenze", "FAQ"],
+    faq: [
+      ["Jak dlouho trvá kurz?", "Délka kurzu závisí na vybrané skupině, kapacitě jízd a vašich časových možnostech."],
+      ["Kolik stojí řidičák?", "Aktuální ceny najdete v ceníku. U skupiny B si můžete vybrat balíček Základ nebo Jistota."],
+      ["Kde začínají jízdy?", "Jízdy domlouváme podle pobočky Praha 8 - Střížkov a aktuální organizace výcviku."],
+      ["Jak probíhá teorie?", "Teorie vysvětluje pravidla, testy a situace, které vás čekají v provozu i u zkoušky."],
+      ["Můžu se přihlásit online?", "Ano, pošlete krátkou přihlášku a další údaje doplníte ve studentském portálu."],
+      ["Co když mám z řízení strach?", "S tím počítáme. Výuka je klidná, trpělivá a bez křiku."],
+    ],
     address: "U Kapliček 34, Střížkov",
     phone: "+420 725 717 755",
+    email: "strizkov@autoskolabubu.cz",
+    local: {
+      name: "Praha 8 - Střížkov",
+      streetAddress: "U Kapliček 34",
+      addressLocality: "Praha 8 - Střížkov",
+      areaServed: ["Střížkov", "Prosek", "Kobylisy", "Letňany", "Ládví", "Ďáblice", "Praha 8", "Praha 9"],
+    },
   },
   {
-    path: "/autoskola-kladno",
+    path: "/kladno",
     priority: "0.9",
-    title: "Autoškola Kladno | Řidičák skupiny B, automat a motorky | BuBu",
-    description: "Autoškola BuBu Kladno nabízí výcvik skupiny B, automat, motorky a doplňovací jízdy. Klidný přístup a příprava na provoz.",
-    h1: "Autoškola Kladno - trpělivý výcvik a férový přístup",
-    lead: "Autoškola BuBu Kladno nabízí řidičák skupiny B, motorku, přívěs i kondiční jízdy s lidským přístupem a přípravou na provoz i závěrečnou zkoušku.",
+    title: "Autoškola Kladno | Řidičák bez stresu | Autoškola BuBu",
+    description: "Autoškola BuBu v Kladně. Řidičák skupiny B bez stresu, trpěliví instruktoři, jasný průběh kurzu a individuální přístup.",
+    h1: "Autoškola Kladno – řidičák bez stresu a zbytečného tlaku",
+    lead: "Kurz skupiny B v Kladně pro začátečníky, nervózní řidiče i ty, kteří chtějí férový a lidský přístup.",
+    body: [
+      "Autoškola BuBu v Kladně je pro studenty, kteří chtějí jasný průběh kurzu, trpělivé instruktory a praktickou přípravu na město i běžný provoz.",
+      "Pobočka dává smysl pro Kladno, Kročehlavy, Rozdělov, Sítnou, centrum Kladna i okolí Kladna. Nabízíme skupinu B, BL17 a kondiční jízdy podle aktuální kapacity.",
+    ],
+    sections: ["Pro koho je pobočka ideální", "Kde výuka probíhá", "Kurzy na této pobočce", "Jak probíhá kurz", "Proč BuBu", "Recenze", "FAQ"],
+    faq: [
+      ["Jak dlouho trvá kurz?", "Délka kurzu závisí na vybrané skupině, kapacitě jízd a vašich časových možnostech."],
+      ["Kolik stojí řidičák?", "Aktuální ceny najdete v ceníku Autoškoly BuBu."],
+      ["Kde začínají jízdy?", "Přesné místo nástupu v Kladně potvrdíme po přihlášce podle aktuální organizace výcviku."],
+      ["Jak probíhá teorie?", "Teorie připravuje na testy, pravidla provozu a praktické situace."],
+      ["Můžu se přihlásit online?", "Ano, přihlášku odešlete online a další údaje doplníte ve studentském portálu."],
+      ["Co když mám z řízení strach?", "Výuku vedeme klidně a bez křiku. Strach z řízení bereme jako normální věc."],
+    ],
     address: "Cyrila Boudy 2954 | Havířská 1141",
     phone: "+420 725 857 884",
+    email: "kladno@autoskolabubu.cz",
+    local: {
+      name: "Kladno",
+      streetAddress: "Cyrila Boudy 2954 | Havířská 1141",
+      addressLocality: "Kladno",
+      areaServed: ["Kladno", "Kročehlavy", "Rozdělov", "Sítná", "centrum Kladna", "okolí Kladna"],
+    },
   },
   {
-    path: "/autoskola-statenice",
+    path: "/statenice",
     priority: "0.9",
     title: "Autoškola Statenice | Řidičák bez stresu | Autoškola BuBu",
-    description: "Autoškola BuBu pro Statenice a okolí. Řidičák skupiny B, automat, motorky a doplňovací jízdy s lidským přístupem.",
-    h1: "Autoškola Statenice - klidný výcvik bez zbytečného stresu",
-    lead: "Autoškola BuBu ve Statenicích je vhodná pro studenty, kteří chtějí osobnější přístup, klidný začátek a srozumitelný plán od přihlášky až po zkoušku.",
+    description: "Autoškola BuBu ve Statenicích. Řidičák skupiny B v klidnějším prostředí, trpěliví instruktoři a dostupnost z Horoměřic, Suchdola i Prahy-západ.",
+    h1: "Autoškola Statenice – klidnější cesta k řidičáku",
+    lead: "Řidičák bez stresu ve Statenicích a okolí. Ideální pro ty, kteří chtějí klidnější začátek než v centru Prahy.",
+    body: [
+      "Statenice jsou dobrá volba pro studenty, kteří chtějí osobnější přístup a klidnější start výcviku.",
+      "Pobočka oslovuje hlavně Statenice, Horoměřice, Suchdol, Únětice, Prahu-západ i směr Dejvice. Nejčastěji řešíme skupinu B a kondiční jízdy podle aktuální kapacity.",
+    ],
+    sections: ["Pro koho je pobočka ideální", "Kde výuka probíhá", "Kurzy na této pobočce", "Jak probíhá kurz", "Proč BuBu", "Recenze", "FAQ"],
+    faq: [
+      ["Jak dlouho trvá kurz?", "Délka kurzu závisí na vybrané skupině, kapacitě jízd a vašich časových možnostech."],
+      ["Kolik stojí řidičák?", "Aktuální ceny najdete v ceníku Autoškoly BuBu."],
+      ["Kde začínají jízdy?", "Začátek výcviku ve Statenicích a okolí potvrdíme po přihlášce podle aktuální domluvy."],
+      ["Jak probíhá teorie?", "Teorie vysvětluje pravidla, testy a běžné situace z provozu."],
+      ["Můžu se přihlásit online?", "Ano, online přihláška zabere pár minut."],
+      ["Co když mám z řízení strach?", "Na nervozitu jsme zvyklí. Postupujeme klidně, trpělivě a bez zbytečného tlaku."],
+    ],
     address: "Statenická 23, Statenice",
     phone: "+420 725 703 171",
+    email: "statenice@autoskolabubu.cz",
+    local: {
+      name: "Statenice",
+      streetAddress: "Statenická 23",
+      addressLocality: "Statenice",
+      areaServed: ["Statenice", "Horoměřice", "Suchdol", "Únětice", "Praha-západ", "Dejvice"],
+    },
   },
 ];
 
@@ -302,10 +362,10 @@ const blogPosts = [
 
 const allPages = [
   ...routes,
-  ...locations.map((item) => ({ ...item, priority: item.priority, sections: ["Kurzy skupiny B", "Automat", "Motorky", "Doplňovací jízdy", item.address] })),
+  ...locations,
   ...locations.flatMap((item) => {
-    const alias = item.path === "/autoskoly-praha-8" ? "/strizkov" : item.path === "/autoskola-kladno" ? "/kladno" : item.path === "/autoskola-statenice" ? "/statenice" : "";
-    return alias ? [{ ...item, path: alias, canonicalPath: item.path, priority: "0.6" }] : [];
+    const alias = item.path === "/strizkov" ? "/autoskoly-praha-8" : item.path === "/kladno" ? "/autoskola-kladno" : item.path === "/statenice" ? "/autoskola-statenice" : "";
+    return alias ? [{ ...item, path: alias, canonicalPath: item.path, priority: "0.4" }] : [];
   }),
   ...courses.map((course) => ({ ...course, priority: "0.9", sections: ["Teorie", "Praktické jízdy", "Studentský portál", "Zkouška", "Rezervace místa"] })),
   ...courses.flatMap((course) => (course.legacy || []).map((legacyPath) => ({ ...course, path: legacyPath, canonicalPath: course.path, priority: "0.6" }))),
@@ -365,6 +425,28 @@ function schemaForPage(page) {
 
   if (page.path !== "/") graph.push(breadcrumbSchema(page));
 
+  if (page.local) {
+    graph.push({
+      "@type": "DrivingSchool",
+      "@id": `${absoluteUrl(page.canonicalPath || page.path)}#local-business`,
+      name: `Autoškola BuBu ${page.local.name}`,
+      url: absoluteUrl(page.canonicalPath || page.path),
+      telephone: page.phone,
+      email: page.email,
+      parentOrganization: { "@id": `${baseUrl}/#organization` },
+      image: `${baseUrl}/assets/vehicles/fabia-bubu-hero.jpg`,
+      priceRange: "$$",
+      slogan: "Řidičák bez stresu",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: page.local.streetAddress,
+        addressLocality: page.local.addressLocality,
+        addressCountry: "CZ",
+      },
+      areaServed: page.local.areaServed,
+    });
+  }
+
   if (page.group) {
     graph.push({
       "@type": "Course",
@@ -393,7 +475,7 @@ function schemaForPage(page) {
     });
   }
 
-  if (page.body) {
+  if (page.body && !page.local) {
     graph.push({
       "@type": "Article",
       headline: page.h1,
@@ -435,7 +517,7 @@ function html(page) {
     <meta name="description" content="${escapeHtml(page.description)}" />
     <meta property="og:title" content="${escapeHtml(page.title)}" />
     <meta property="og:description" content="${escapeHtml(page.description)}" />
-    <meta property="og:type" content="${page.body ? "article" : "website"}" />
+    <meta property="og:type" content="${page.body && !page.local ? "article" : "website"}" />
     <meta property="og:url" content="${canonical}" />
     <meta property="og:locale" content="cs_CZ" />
     <meta property="og:site_name" content="Autoškola BuBu" />
