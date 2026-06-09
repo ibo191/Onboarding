@@ -2,8 +2,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const baseUrl = "https://www.autoskolabubu.cz";
-const cssVersion = "24";
-const appVersion = "28";
+const cssVersion = "25";
+const appVersion = "29";
 const supabaseVersion = "2";
 
 const organization = {
@@ -44,10 +44,10 @@ const routes = [
     path: "/",
     priority: "1.0",
     title: "Autoškola BuBu | Řidičák bez stresu v Praze, Kladně a Statenicích",
-    description: "Autoškola BuBu vás připraví na řidičák skupiny B, automat i motorku bez stresu v Praze, Kladně a Statenicích.",
-    h1: "Řidičák bez stresu. Začněte v klidu.",
-    lead: "Naučíme vás řídit srozumitelně, trpělivě a krok za krokem.",
-    sections: ["Oblíbené kurzy", "Autoškola Praha 8", "Autoškola Kladno", "Autoškola Statenice", "FAQ", "Google recenze"],
+    description: "Autoškola BuBu vás připraví na řidičák skupiny B, BL17, automat, motorky i kondiční jízdy bez stresu v Praze 8, Kladně a Statenicích.",
+    h1: "Řidičák bez stresu v Praze 8, Kladně a Statenicích",
+    lead: "Trpěliví instruktoři, příprava na reálnou zkoušku a jasný plán od první jízdy po komisaře.",
+    sections: ["Oblíbené kurzy", "Trust bar", "Proč BuBu", "Jak probíhá kurz", "Pobočky", "Recenze", "Ceník", "FAQ"],
   },
   {
     path: "/cenik",
@@ -121,8 +121,8 @@ const locations = [
     priority: "0.9",
     title: "Autoškola Praha 8 | Řidičák bez stresu | Autoškola BuBu",
     description: "Hledáte autoškolu v Praze 8? Autoškola BuBu nabízí řidičák skupiny B, automat, motorky a doplňovací jízdy s klidným přístupem.",
-    h1: "Autoškola Praha 8 bez stresu",
-    lead: "Pobočka Praha 8 - Střížkov je vhodná pro Střížkov, Prosek, Letňany, Ďáblice a Kobylisy.",
+    h1: "Autoškola Střížkov - řidičák bez stresu na Praze 8",
+    lead: "Pobočka Praha 8 / Střížkov je hlavní místo Autoškoly BuBu pro studenty, kteří chtějí klidný výcvik, jasný plán a přípravu na reálnou zkoušku.",
     address: "U Kapliček 34, Střížkov",
     phone: "+420 725 717 755",
   },
@@ -131,8 +131,8 @@ const locations = [
     priority: "0.9",
     title: "Autoškola Kladno | Řidičák skupiny B, automat a motorky | BuBu",
     description: "Autoškola BuBu Kladno nabízí výcvik skupiny B, automat, motorky a doplňovací jízdy. Klidný přístup a příprava na provoz.",
-    h1: "Autoškola Kladno: řidičák bez stresu",
-    lead: "Pobočka Kladno nabízí výuku v centru Kladna a výcvik v městském i příměstském provozu.",
+    h1: "Autoškola Kladno - trpělivý výcvik a férový přístup",
+    lead: "Autoškola BuBu Kladno nabízí řidičák skupiny B, motorku, přívěs i kondiční jízdy s lidským přístupem a přípravou na provoz i závěrečnou zkoušku.",
     address: "Cyrila Boudy 2954 | Havířská 1141",
     phone: "+420 725 857 884",
   },
@@ -141,8 +141,8 @@ const locations = [
     priority: "0.9",
     title: "Autoškola Statenice | Řidičák bez stresu | Autoškola BuBu",
     description: "Autoškola BuBu pro Statenice a okolí. Řidičák skupiny B, automat, motorky a doplňovací jízdy s lidským přístupem.",
-    h1: "Autoškola Statenice a okolí",
-    lead: "Výuka ve Statenicích a výcvik v okolí Statenic, Kladna a Prahy 6.",
+    h1: "Autoškola Statenice - klidný výcvik bez zbytečného stresu",
+    lead: "Autoškola BuBu ve Statenicích je vhodná pro studenty, kteří chtějí osobnější přístup, klidný začátek a srozumitelný plán od přihlášky až po zkoušku.",
     address: "Statenická 23, Statenice",
     phone: "+420 725 703 171",
   },
@@ -293,6 +293,10 @@ const blogPosts = [
 const allPages = [
   ...routes,
   ...locations.map((item) => ({ ...item, priority: item.priority, sections: ["Kurzy skupiny B", "Automat", "Motorky", "Doplňovací jízdy", item.address] })),
+  ...locations.flatMap((item) => {
+    const alias = item.path === "/autoskoly-praha-8" ? "/strizkov" : item.path === "/autoskola-kladno" ? "/kladno" : item.path === "/autoskola-statenice" ? "/statenice" : "";
+    return alias ? [{ ...item, path: alias, canonicalPath: item.path, priority: "0.6" }] : [];
+  }),
   ...courses.map((course) => ({ ...course, priority: "0.9", sections: ["Teorie", "Praktické jízdy", "Studentský portál", "Zkouška", "Rezervace místa"] })),
   ...courses.flatMap((course) => (course.legacy || []).map((legacyPath) => ({ ...course, path: legacyPath, canonicalPath: course.path, priority: "0.6" }))),
   ...blogPosts.map((post) => ({ ...post, priority: "0.7", sections: ["Blog", "Autoškola BuBu", "Řidičák bez stresu"] })),
