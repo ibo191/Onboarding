@@ -2,8 +2,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const baseUrl = "https://www.autoskolabubu.cz";
-const cssVersion = "25";
-const appVersion = "29";
+const cssVersion = "26";
+const appVersion = "30";
 const supabaseVersion = "2";
 
 const organization = {
@@ -112,6 +112,16 @@ const routes = [
     h1: "E-shop produkty Autoškoly BuBu",
     lead: "Produkty si můžete přidat rovnou k objednávce kurzu nebo je řešit samostatně s autoškolou.",
     sections: ["Učební kniha", "BuBu merch", "Osobní odběr"],
+  },
+  {
+    path: "/dekujeme-za-vyplneni-objednavky",
+    priority: "0.1",
+    robots: "noindex,nofollow",
+    title: "Děkujeme za objednávku | Autoškola BuBu",
+    description: "Potvrzení objednávky kurzu Autoškoly BuBu a další krok do studentského portálu.",
+    h1: "Objednávku máme v systému BuBu.",
+    lead: "Teď je potřeba nastavit si heslo do studentského portálu a doplnit údaje k přihlášce.",
+    sections: ["Nastavení hesla", "Studentský portál", "Doplnění údajů", "Dokumenty k přihlášce"],
   },
 ];
 
@@ -415,7 +425,7 @@ function prerenderContent(page) {
 
 function html(page) {
   const canonical = absoluteUrl(page.canonicalPath || page.path);
-  const robots = ["/admin", "/student", "/onboarding"].some((blocked) => page.path.startsWith(blocked)) ? "noindex,nofollow" : "index,follow,max-image-preview:large";
+  const robots = page.robots || (["/admin", "/student", "/onboarding"].some((blocked) => page.path.startsWith(blocked)) ? "noindex,nofollow" : "index,follow,max-image-preview:large");
   return `<!doctype html>
 <html lang="cs">
   <head>
@@ -462,6 +472,7 @@ function sitemapXml() {
   const unique = new Map();
   allPages.forEach((page) => {
     if (page.path.startsWith("/admin") || page.path.startsWith("/student")) return;
+    if (page.robots?.includes("noindex")) return;
     if (page.canonicalPath) return;
     unique.set(page.path, page);
   });

@@ -13,8 +13,8 @@ function siteUrl(path = "") {
   return `${env("PUBLIC_SITE_URL", "https://www.autoskolabubu.cz")}${path}`;
 }
 
-function portalUrl() {
-  return `${portalBaseUrl()}/onboarding/index.html`;
+function portalUrl(req) {
+  return `${portalBaseUrl(req)}/onboarding/index.html`;
 }
 
 function escapeHtml(value = "") {
@@ -183,7 +183,7 @@ async function sendOrderEmails(application, req) {
     const customerHtml = mailLayout({
       title: "Přihláška je přijatá",
       intro: `Dobrý den, ${escapeHtml(fullName)}. Děkujeme za rezervaci místa v Autoškole BuBu. Přihlásil/a jste se do kurzu ${escapeHtml(course.title)}. Váš další krok je otevřít studentský portál, nastavit si heslo a doplnit údaje k přihlášce.`,
-      buttonUrl: portalAccess?.magicUrl || portalUrl(),
+      buttonUrl: portalAccess?.magicUrl || portalUrl(req),
       buttonText: portalAccess?.magicUrl ? "Nastavit heslo do portálu" : "Otevřít studentský portál",
       children: `
         ${infoBox("Co teď musíte udělat", "Otevřete studentský portál, nastavte si heslo a vyplňte tam údaje. Bez doplnění údajů a dokumentů nemůžeme přihlášku posunout dál.")}
@@ -197,12 +197,18 @@ async function sendOrderEmails(application, req) {
         ])}
         <h2 style="margin:26px 0 10px;font-size:20px;color:#10131a">Co bude následovat</h2>
         ${stepsList([
-          "Klikněte na tlačítko a otevřete studentský portál.",
-          "Nastavte si heslo a doplňte údaje k přihlášce.",
+          "Klikněte na tlačítko „Nastavit heslo do portálu“.",
+          "Nastavte si heslo. Přihlašovací jméno bude váš e-mail.",
           "Nahrajte potřebné dokumenty.",
           "Autoškola údaje zkontroluje a ozve se vám s dalším postupem.",
         ])}
-        ${portalAccess?.magicUrl ? `<p style="margin:16px 0 0;color:#667085;font-size:13px">Odkaz pro nastavení hesla je platný 24 hodin. Přihlašovací jméno bude váš e-mail.</p>` : ""}
+        ${portalAccess?.magicUrl ? `
+          <div style="margin:22px 0 0;padding:16px;border:1px solid #d7e2ea;border-radius:14px;background:#ffffff">
+            <p style="margin:0 0 8px;color:#10131a;font-weight:900">Odkazy do portálu</p>
+            <p style="margin:0 0 12px;color:#667085;font-size:13px">První odkaz je jednorázový a slouží k nastavení hesla. Platí 24 hodin.</p>
+            <a href="${escapeHtml(portalAccess.magicUrl)}" style="display:inline-block;margin:0 10px 10px 0;padding:12px 16px;border-radius:10px;background:#4AB9AB;color:#ffffff;text-decoration:none;font-weight:900">Nastavit heslo</a>
+            <a href="${escapeHtml(portalUrl(req))}" style="display:inline-block;margin:0 0 10px;padding:12px 16px;border-radius:10px;background:#eef9f7;color:#1f3772;text-decoration:none;font-weight:900">Přihlásit se do portálu</a>
+          </div>` : ""}
         <p style="margin:20px 0 0;color:#475467">Nemusíte se ničeho bát. Celým procesem vás provedeme krok za krokem.</p>
       `,
       footer: "Autoškola BuBu · Řidičák bez stresu",

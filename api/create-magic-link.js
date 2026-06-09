@@ -47,7 +47,7 @@ export default async function handler(req, res) {
       ok: true,
       expiresAt,
       emailSent: emailResult.sent,
-      magicUrl: process.env.NODE_ENV === "production" && emailResult.sent ? undefined : magicUrl,
+      magicUrl,
     });
   } catch (error) {
     return json(res, 500, { error: "Magic link could not be created", detail: error.message });
