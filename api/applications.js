@@ -121,7 +121,7 @@ async function createPortalAccess(application, email, req) {
     magicLinkRequestedAt: new Date().toISOString(),
     magicLinkExpiresAt: expiresAt,
     magicLinkEmailSent: true,
-    magicLinkPreviewUrl: process.env.NODE_ENV === "production" ? "" : magicUrl,
+    magicLinkPreviewUrl: magicUrl,
   };
   return { magicUrl, expiresAt };
 }
