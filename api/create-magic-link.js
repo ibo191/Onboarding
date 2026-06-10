@@ -1,6 +1,17 @@
 import { json, portalBaseUrl, randomToken, readBody, sha256, supabaseRequest } from "./_supabase.js";
 import { mailLayout, sendMail, textFromHtml } from "./_mail.js";
 
+function portalUrl(req) {
+  return `${portalBaseUrl(req)}/onboarding/index.html`;
+}
+
+function portalPasswordSetupUrl(req, token) {
+  const url = new URL(portalUrl(req));
+  url.searchParams.set("magic", token);
+  url.searchParams.set("flow", "set-password");
+  return url.toString();
+}
+
 async function sendMagicEmail(email, magicUrl) {
   const html = mailLayout({
     title: "Studentský portál Autoškoly BuBu",
@@ -41,7 +52,7 @@ export default async function handler(req, res) {
         expires_at: expiresAt,
       }),
     });
-    const magicUrl = `${portalBaseUrl(req)}/onboarding/index.html#magic=${encodeURIComponent(token)}`;
+    const magicUrl = portalPasswordSetupUrl(req, token);
     const emailResult = await sendMagicEmail(email, magicUrl);
     return json(res, 200, {
       ok: true,
