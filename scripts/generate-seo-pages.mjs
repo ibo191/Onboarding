@@ -2,8 +2,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const baseUrl = "https://www.autoskolabubu.cz";
-const cssVersion = "28";
-const appVersion = "35";
+const cssVersion = "29";
+const appVersion = "36";
 const supabaseVersion = "2";
 
 const organization = {
