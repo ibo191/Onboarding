@@ -76,6 +76,38 @@ function rowFromApplication(application) {
   };
 }
 
+async function findMagicLink(tokenHash) {
+  try {
+    const links = await supabaseRequest(`magic_links?select=*&token_hash=eq.${encodeURIComponent(tokenHash)}&used_at=is.null&expires_at=gt.${encodeURIComponent(new Date().toISOString())}&limit=1`);
+    const link = Array.isArray(links) ? links[0] : null;
+    if (link) return { link, fallbackRow: null };
+  } catch (error) {
+    // Older deployments may not have a usable magic_links table yet. In that case
+    // we validate the token against the hashed fallback stored on the application.
+  }
+  const rows = await supabaseRequest("applications?select=*&order=updated_at.desc&limit=500");
+  const now = Date.now();
+  const fallbackRow = Array.isArray(rows)
+    ? rows.find((row) => {
+        const credentials = row?.data?.credentials || {};
+        const expiresAt = credentials.magicTokenExpiresAt || credentials.magicLinkExpiresAt || "";
+        return credentials.magicTokenHash === tokenHash
+          && !credentials.magicTokenUsedAt
+          && Number.isFinite(new Date(expiresAt).getTime())
+          && new Date(expiresAt).getTime() > now;
+      })
+    : null;
+  if (!fallbackRow?.data) return null;
+  return {
+    fallbackRow,
+    link: {
+      application_id: fallbackRow.id,
+      email: fallbackRow.data.credentials?.email || fallbackRow.student_email || "",
+      fallback: true,
+    },
+  };
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") return json(res, 405, { error: "Method not allowed" });
   try {
@@ -84,14 +116,18 @@ export default async function handler(req, res) {
       return json(res, 400, { error: "Token and stronger password are required" });
     }
     const tokenHash = sha256(token);
-    const links = await supabaseRequest(`magic_links?select=*&token_hash=eq.${encodeURIComponent(tokenHash)}&used_at=is.null&expires_at=gt.${encodeURIComponent(new Date().toISOString())}&limit=1`);
-    const link = Array.isArray(links) ? links[0] : null;
+    const found = await findMagicLink(tokenHash);
+    const link = found?.link || null;
     if (!link) return json(res, 400, { error: "Magic link is invalid or expired" });
 
-    const onboardingRows = await supabaseRequest(`applications?select=*&source=eq.onboarding&id=eq.${encodeURIComponent(link.application_id)}&limit=1`);
+    const onboardingRows = found?.fallbackRow?.source === "onboarding"
+      ? [found.fallbackRow]
+      : await supabaseRequest(`applications?select=*&source=eq.onboarding&id=eq.${encodeURIComponent(link.application_id)}&limit=1`);
     const webRows = Array.isArray(onboardingRows) && onboardingRows[0]
       ? []
-      : await supabaseRequest(`applications?select=*&source=eq.web&id=eq.${encodeURIComponent(link.application_id)}&limit=1`);
+      : found?.fallbackRow?.source === "web"
+        ? [found.fallbackRow]
+        : await supabaseRequest(`applications?select=*&source=eq.web&id=eq.${encodeURIComponent(link.application_id)}&limit=1`);
     const row = Array.isArray(onboardingRows) && onboardingRows[0] ? onboardingRows[0] : Array.isArray(webRows) ? webRows[0] : null;
     if (!row?.data) return json(res, 404, { error: "Application was not found" });
 
@@ -110,6 +146,9 @@ export default async function handler(req, res) {
         passwordSet: true,
         magicToken: "",
         magicExpiresAt: "",
+        magicTokenHash: "",
+        magicTokenExpiresAt: "",
+        magicTokenUsedAt: new Date().toISOString(),
       },
     };
     await supabaseRequest("applications?on_conflict=id,source", {
@@ -117,11 +156,29 @@ export default async function handler(req, res) {
       headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
       body: JSON.stringify(rowFromApplication(nextData)),
     });
-    await supabaseRequest(`magic_links?token_hash=eq.${encodeURIComponent(tokenHash)}`, {
-      method: "PATCH",
-      headers: { Prefer: "return=minimal" },
-      body: JSON.stringify({ used_at: new Date().toISOString() }),
-    });
+    if (link.fallback && found?.fallbackRow?.data) {
+      await supabaseRequest(`applications?id=eq.${encodeURIComponent(found.fallbackRow.id)}&source=eq.${encodeURIComponent(found.fallbackRow.source)}`, {
+        method: "PATCH",
+        headers: { Prefer: "return=minimal" },
+        body: JSON.stringify({
+          data: {
+            ...found.fallbackRow.data,
+            credentials: {
+              ...(found.fallbackRow.data.credentials || {}),
+              magicTokenHash: "",
+              magicTokenExpiresAt: "",
+              magicTokenUsedAt: new Date().toISOString(),
+            },
+          },
+        }),
+      });
+    } else {
+      await supabaseRequest(`magic_links?token_hash=eq.${encodeURIComponent(tokenHash)}`, {
+        method: "PATCH",
+        headers: { Prefer: "return=minimal" },
+        body: JSON.stringify({ used_at: new Date().toISOString() }),
+      });
+    }
     return json(res, 200, { ok: true, applicationId: row.id, application: nextData });
   } catch (error) {
     return json(res, 500, { error: "Password could not be saved", detail: error.message });

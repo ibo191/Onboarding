@@ -106,22 +106,29 @@ async function createPortalAccess(application, email, req) {
   const tokenHash = sha256(token);
   const normalizedEmail = String(email).toLowerCase();
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-  await supabaseRequest(`magic_links?application_id=eq.${encodeURIComponent(application.id)}&email=eq.${encodeURIComponent(normalizedEmail)}&used_at=is.null`, {
-    method: "PATCH",
-    headers: { Prefer: "return=minimal" },
-    body: JSON.stringify({ used_at: new Date().toISOString() }),
-  });
-  await supabaseRequest("magic_links", {
-    method: "POST",
-    headers: { Prefer: "return=minimal" },
-    body: JSON.stringify({
-      token_hash: tokenHash,
-      application_id: application.id,
-      email: normalizedEmail,
-      expires_at: expiresAt,
-    }),
-  });
   const magicUrl = portalPasswordSetupUrl(req, token);
+  let storage = "magic_links";
+  let storageWarning = "";
+  try {
+    await supabaseRequest(`magic_links?application_id=eq.${encodeURIComponent(application.id)}&email=eq.${encodeURIComponent(normalizedEmail)}&used_at=is.null`, {
+      method: "PATCH",
+      headers: { Prefer: "return=minimal" },
+      body: JSON.stringify({ used_at: new Date().toISOString() }),
+    });
+    await supabaseRequest("magic_links", {
+      method: "POST",
+      headers: { Prefer: "return=minimal" },
+      body: JSON.stringify({
+        token_hash: tokenHash,
+        application_id: application.id,
+        email: normalizedEmail,
+        expires_at: expiresAt,
+      }),
+    });
+  } catch (error) {
+    storage = "application";
+    storageWarning = error.message || "magic_links write failed";
+  }
   application.credentials = {
     ...(application.credentials || {}),
     email: normalizedEmail,
@@ -129,8 +136,14 @@ async function createPortalAccess(application, email, req) {
     magicLinkExpiresAt: expiresAt,
     magicLinkEmailSent: true,
     magicLinkPreviewUrl: magicUrl,
+    magicLinkStorage: storage,
+    magicLinkError: "",
+    magicTokenHash: tokenHash,
+    magicTokenExpiresAt: expiresAt,
+    magicTokenUsedAt: "",
+    ...(storageWarning ? { magicLinkStorageWarning: storageWarning } : {}),
   };
-  return { magicUrl, expiresAt };
+  return { magicUrl, expiresAt, storage, warning: storageWarning };
 }
 
 async function sendOrderEmails(application, req) {
@@ -215,11 +228,7 @@ async function sendOrderEmails(application, req) {
             <p style="margin:0 0 12px;color:#667085;font-size:13px">První odkaz je jednorázový a slouží k nastavení hesla. Platí 24 hodin.</p>
             <a href="${escapeHtml(portalAccess.magicUrl)}" style="display:inline-block;margin:0 10px 10px 0;padding:12px 16px;border-radius:10px;background:#4AB9AB;color:#ffffff;text-decoration:none;font-weight:900">Nastavit heslo</a>
             <a href="${escapeHtml(portalUrl(req))}" style="display:inline-block;margin:0 0 10px;padding:12px 16px;border-radius:10px;background:#eef9f7;color:#1f3772;text-decoration:none;font-weight:900">Přihlásit se do portálu</a>
-          </div>` : `
-          <div style="margin:22px 0 0;padding:16px;border:1px solid #f6c7c7;border-radius:14px;background:#fff7f7">
-            <p style="margin:0;color:#9f1d1d;font-weight:900">Přístupový odkaz se nepodařilo vytvořit automaticky.</p>
-            <p style="margin:8px 0 0;color:#475467">Ozveme se vám a pošleme nový odkaz ručně.</p>
-          </div>`}
+          </div>` : ""}
         <p style="margin:20px 0 0;color:#475467">Nemusíte se ničeho bát. Celým procesem vás provedeme krok za krokem.</p>
       `,
       footer: "Autoškola BuBu · Řidičák bez stresu",
@@ -244,6 +253,8 @@ async function sendOrderEmails(application, req) {
       : { orderEmailSkippedAt: new Date().toISOString(), orderEmailSkippedReason: "smtp_not_configured" }),
     orderEmailProvider: result.admin?.provider || result.customer?.provider || "unknown",
     ordersEmail: ordersEmail(),
+    ...(portalAccess?.storage ? { magicLinkStorage: portalAccess.storage } : {}),
+    ...(portalAccess?.warning ? { magicLinkStorageWarning: portalAccess.warning } : {}),
     ...(result.errors.admin ? { adminOrderEmailError: result.errors.admin } : {}),
     ...(result.errors.customer ? { customerOrderEmailError: result.errors.customer } : {}),
     ...(result.errors.magicLink ? { magicLinkError: result.errors.magicLink } : {}),
