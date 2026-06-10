@@ -2,8 +2,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const baseUrl = "https://www.autoskolabubu.cz";
-const cssVersion = "26";
-const appVersion = "33";
+const cssVersion = "27";
+const appVersion = "34";
 const supabaseVersion = "2";
 
 const organization = {
@@ -45,7 +45,7 @@ const routes = [
     priority: "1.0",
     title: "Autoškola BuBu | Řidičák bez stresu v Praze, Kladně a Statenicích",
     description: "Autoškola BuBu vás připraví na řidičák skupiny B, BL17, automat, motorky i kondiční jízdy bez stresu v Praze 8, Kladně a Statenicích.",
-    h1: "Řidičák bez stresu v Praze 8, Kladně a Statenicích",
+    h1: "Řidičák bez stresu",
     lead: "Trpěliví instruktoři, příprava na reálnou zkoušku a jasný plán od první jízdy po komisaře.",
     sections: ["Oblíbené kurzy", "Trust bar", "Proč BuBu", "Jak probíhá kurz", "Pobočky", "Recenze", "Ceník", "FAQ"],
   },
@@ -530,6 +530,7 @@ function html(page) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css?v=${cssVersion}" />
+    <link rel="stylesheet" href="/header-hero.css?v=${cssVersion}" />
     <style>.seo-prerender{position:fixed;inset:0;opacity:0;pointer-events:none;overflow:hidden}noscript+style{display:none}</style>
     <noscript><style>.seo-prerender{position:static;opacity:1;pointer-events:auto;overflow:visible;padding:40px 20px;max-width:900px;margin:0 auto;font-family:Montserrat,system-ui,sans-serif}</style></noscript>
     <script type="application/ld+json">${JSON.stringify(schemaForPage(page))}</script>
