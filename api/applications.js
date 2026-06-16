@@ -1,4 +1,4 @@
-import { json, portalBaseUrl, randomToken, readBody, sha256, supabaseRequest } from "./_supabase.js";
+import { json, portalBaseUrl, readBody, supabaseRequest } from "./_supabase.js";
 import { mailLayout, sendMail, textFromHtml } from "./_mail.js";
 
 function env(name, fallback = "") {
@@ -17,10 +17,11 @@ function portalUrl(req) {
   return `${portalBaseUrl(req)}/onboarding/index.html`;
 }
 
-function portalPasswordSetupUrl(req, token) {
+function portalPasswordSetupUrl(req, applicationId, email) {
   const url = new URL(portalUrl(req));
-  url.searchParams.set("magic", token);
   url.searchParams.set("flow", "set-password");
+  url.searchParams.set("application", applicationId);
+  url.searchParams.set("email", email);
   return url.toString();
 }
 
@@ -102,48 +103,16 @@ function stepsList(items) {
 
 async function createPortalAccess(application, email, req) {
   if (!application?.id || !email) return null;
-  const token = randomToken(32);
-  const tokenHash = sha256(token);
   const normalizedEmail = String(email).toLowerCase();
-  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-  const magicUrl = portalPasswordSetupUrl(req, token);
-  let storage = "magic_links";
-  let storageWarning = "";
-  try {
-    await supabaseRequest(`magic_links?application_id=eq.${encodeURIComponent(application.id)}&email=eq.${encodeURIComponent(normalizedEmail)}&used_at=is.null`, {
-      method: "PATCH",
-      headers: { Prefer: "return=minimal" },
-      body: JSON.stringify({ used_at: new Date().toISOString() }),
-    });
-    await supabaseRequest("magic_links", {
-      method: "POST",
-      headers: { Prefer: "return=minimal" },
-      body: JSON.stringify({
-        token_hash: tokenHash,
-        application_id: application.id,
-        email: normalizedEmail,
-        expires_at: expiresAt,
-      }),
-    });
-  } catch (error) {
-    storage = "application";
-    storageWarning = error.message || "magic_links write failed";
-  }
+  const setupUrl = portalPasswordSetupUrl(req, application.id, normalizedEmail);
   application.credentials = {
     ...(application.credentials || {}),
     email: normalizedEmail,
-    magicLinkRequestedAt: new Date().toISOString(),
-    magicLinkExpiresAt: expiresAt,
-    magicLinkEmailSent: true,
-    magicLinkPreviewUrl: magicUrl,
-    magicLinkStorage: storage,
-    magicLinkError: "",
-    magicTokenHash: tokenHash,
-    magicTokenExpiresAt: expiresAt,
-    magicTokenUsedAt: "",
-    ...(storageWarning ? { magicLinkStorageWarning: storageWarning } : {}),
+    passwordSetupUrl: setupUrl,
+    portalLoginUrl: portalUrl(req),
+    passwordSet: Boolean(application.credentials?.passwordSet),
   };
-  return { magicUrl, expiresAt, storage, warning: storageWarning };
+  return { setupUrl, portalUrl: portalUrl(req) };
 }
 
 async function sendOrderEmails(application, req) {
@@ -196,14 +165,14 @@ async function sendOrderEmails(application, req) {
   if (email) {
     try {
       portalAccess = await createPortalAccess(application, email, req);
-      result.portalSetupUrl = portalAccess?.magicUrl || "";
+      result.portalSetupUrl = portalAccess?.setupUrl || "";
     } catch (error) {
-      result.errors.magicLink = error.message;
+      result.errors.passwordSetup = error.message;
     }
     const customerHtml = mailLayout({
       title: "Přihláška je přijatá",
       intro: `Dobrý den, ${escapeHtml(fullName)}. Děkujeme za rezervaci místa v Autoškole BuBu. Přihlásil/a jste se do kurzu ${escapeHtml(course.title)}. Váš další krok je otevřít studentský portál, nastavit si heslo a doplnit údaje k přihlášce.`,
-      buttonUrl: portalAccess?.magicUrl || "",
+      buttonUrl: portalAccess?.setupUrl || "",
       buttonText: "Nastavit heslo do studentského portálu",
       children: `
         ${infoBox("Co teď musíte udělat", "Otevřete studentský portál, nastavte si heslo a vyplňte tam údaje. Bez doplnění údajů a dokumentů nemůžeme přihlášku posunout dál.")}
@@ -222,12 +191,12 @@ async function sendOrderEmails(application, req) {
           "Nahrajte potřebné dokumenty.",
           "Autoškola údaje zkontroluje a ozve se vám s dalším postupem.",
         ])}
-        ${portalAccess?.magicUrl ? `
+        ${portalAccess?.setupUrl ? `
           <div style="margin:22px 0 0;padding:16px;border:1px solid #d7e2ea;border-radius:14px;background:#ffffff">
             <p style="margin:0 0 8px;color:#10131a;font-weight:900">Odkazy do portálu</p>
-            <p style="margin:0 0 12px;color:#667085;font-size:13px">První odkaz je jednorázový a slouží k nastavení hesla. Platí 24 hodin.</p>
-            <a href="${escapeHtml(portalAccess.magicUrl)}" style="display:inline-block;margin:0 10px 10px 0;padding:12px 16px;border-radius:10px;background:#4AB9AB;color:#ffffff;text-decoration:none;font-weight:900">Nastavit heslo</a>
-            <a href="${escapeHtml(portalUrl(req))}" style="display:inline-block;margin:0 0 10px;padding:12px 16px;border-radius:10px;background:#eef9f7;color:#1f3772;text-decoration:none;font-weight:900">Přihlásit se do portálu</a>
+            <p style="margin:0 0 12px;color:#667085;font-size:13px">Nejprve si nastavte heslo. Přihlašovací jméno bude váš e-mail.</p>
+            <a href="${escapeHtml(portalAccess.setupUrl)}" style="display:inline-block;margin:0 10px 10px 0;padding:12px 16px;border-radius:10px;background:#4AB9AB;color:#ffffff;text-decoration:none;font-weight:900">Nastavit heslo</a>
+            <a href="${escapeHtml(portalAccess.portalUrl)}" style="display:inline-block;margin:0 0 10px;padding:12px 16px;border-radius:10px;background:#eef9f7;color:#1f3772;text-decoration:none;font-weight:900">Přihlásit se do portálu</a>
           </div>` : ""}
         <p style="margin:20px 0 0;color:#475467">Nemusíte se ničeho bát. Celým procesem vás provedeme krok za krokem.</p>
       `,
@@ -253,11 +222,9 @@ async function sendOrderEmails(application, req) {
       : { orderEmailSkippedAt: new Date().toISOString(), orderEmailSkippedReason: "smtp_not_configured" }),
     orderEmailProvider: result.admin?.provider || result.customer?.provider || "unknown",
     ordersEmail: ordersEmail(),
-    ...(portalAccess?.storage ? { magicLinkStorage: portalAccess.storage } : {}),
-    ...(portalAccess?.warning ? { magicLinkStorageWarning: portalAccess.warning } : {}),
     ...(result.errors.admin ? { adminOrderEmailError: result.errors.admin } : {}),
     ...(result.errors.customer ? { customerOrderEmailError: result.errors.customer } : {}),
-    ...(result.errors.magicLink ? { magicLinkError: result.errors.magicLink } : {}),
+    ...(result.errors.passwordSetup ? { passwordSetupError: result.errors.passwordSetup } : {}),
   };
   return result;
 }

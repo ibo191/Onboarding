@@ -1,0 +1,357 @@
+.portal-redesign-admin {
+  grid-template-columns: 262px minmax(0, 1fr);
+  background: #eef7f9;
+  color: var(--ink);
+}
+
+.portal-redesign-admin .studio-sidebar {
+  background: #e8f2f4;
+  color: #384747;
+  border-right: 1px solid #bfd0d5;
+}
+
+.portal-redesign-admin .studio-brand {
+  border: 0;
+  color: #00796f;
+  padding: 8px 6px 24px;
+}
+
+.portal-redesign-admin .studio-brand strong {
+  font-size: 28px;
+  line-height: 1;
+  color: #00796f;
+}
+
+.portal-redesign-admin .studio-brand small {
+  color: #384747;
+  font-weight: 500;
+}
+
+.portal-avatar {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: var(--turquoise);
+  color: #00796f;
+  margin-bottom: 12px;
+}
+
+.portal-redesign-admin .studio-menu button {
+  grid-template-columns: 32px 1fr;
+  color: #3e5050;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-weight: 800;
+}
+
+.portal-redesign-admin .studio-menu button::before {
+  content: "▦";
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  color: #344;
+}
+
+.portal-redesign-admin .studio-menu button span,
+.portal-redesign-admin .studio-menu button small {
+  grid-column: 2;
+}
+
+.portal-redesign-admin .studio-menu button small {
+  color: #536565;
+  font-weight: 500;
+}
+
+.portal-redesign-admin .studio-menu button.active,
+.portal-redesign-admin .studio-menu button:hover {
+  background: #70c9bd;
+  color: #0b6f67;
+  box-shadow: none;
+}
+
+.portal-redesign-admin .studio-menu button.active small,
+.portal-redesign-admin .studio-menu button:hover small {
+  color: #0b6f67;
+}
+
+.studio-new {
+  min-height: 44px;
+  border-radius: 999px;
+  background: #087b70;
+  color: #fff;
+  font-weight: 900;
+  margin-top: auto;
+}
+
+.studio-footer-actions {
+  display: grid;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid #bfd0d5;
+}
+
+.studio-help,
+.portal-redesign-admin .studio-edit {
+  min-height: 38px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: transparent;
+  color: #384747;
+  text-align: left;
+  font-weight: 800;
+}
+
+.portal-redesign-admin .studio-main {
+  padding: 30px clamp(24px, 4vw, 56px);
+}
+
+.portal-redesign-admin .studio-top {
+  align-items: center;
+}
+
+.portal-redesign-admin .studio-top h1 {
+  font-size: clamp(38px, 5vw, 56px);
+  line-height: 1.02;
+  color: #10131a;
+  margin: 0 0 6px;
+}
+
+.admin-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(260px, 100%);
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #dfeaed;
+  color: #617071;
+  text-transform: none;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.admin-search input {
+  min-height: 38px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.admin-export {
+  border-radius: 999px;
+}
+
+.admin-filter-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 232px;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.admin-filter-panel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(160px, 1fr)) auto;
+  gap: 16px;
+  align-items: end;
+  padding: 24px;
+  border-radius: 14px;
+  box-shadow: 0 18px 42px rgba(16, 19, 26, 0.06);
+}
+
+.admin-filter-panel .field label {
+  font-size: 13px;
+  color: #485858;
+  font-weight: 500;
+  text-transform: none;
+}
+
+.admin-filter-panel select {
+  border: 0;
+  background: #e5eef1;
+  border-radius: 8px;
+}
+
+.admin-filter-btn {
+  justify-self: start;
+  background: #dce6e9;
+  color: #4a5a5a;
+}
+
+.admin-waiting-card {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 18px 42px rgba(16, 19, 26, 0.06);
+}
+
+.admin-waiting-card span {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #485858;
+}
+
+.admin-waiting-card strong {
+  font-size: 50px;
+  color: #00796f;
+  line-height: 1;
+}
+
+.admin-applications-table {
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+.admin-applications-table .admin-table-head,
+.admin-applications-table .admin-application-row {
+  grid-template-columns: 34px minmax(150px, 1.2fr) minmax(150px, 0.95fr) minmax(110px, 0.7fr) minmax(140px, 0.9fr) minmax(80px, 0.55fr) minmax(80px, 0.55fr) minmax(76px, 0.45fr);
+}
+
+.admin-applications-table .admin-table-head {
+  background: #e8f2f4;
+  color: #344;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.admin-applications-table .admin-application-row {
+  min-height: 96px;
+  padding: 18px;
+  border-top: 1px solid #cbdadd;
+  background: #fff;
+  box-shadow: none;
+}
+
+.admin-applications-table .admin-application-row:hover {
+  background: #f7fbfc;
+}
+
+.admin-checkbox {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #8fa0a3;
+  background: #f8fbfc;
+}
+
+.admin-student-cell h3 {
+  font-size: 16px;
+  margin: 0 0 3px;
+}
+
+.admin-student-cell p,
+.admin-applications-table p {
+  margin: 0;
+  color: #44566b;
+  line-height: 1.35;
+}
+
+.admin-applications-table .status {
+  min-height: 24px;
+  border-radius: 999px;
+  text-transform: none;
+  font-size: 12px;
+}
+
+.admin-progress {
+  display: block;
+  width: 48px;
+  height: 7px;
+  border-radius: 999px;
+  background: #d8e1e3;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.admin-progress i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #00796f;
+}
+
+.admin-doc-icon {
+  font-size: 24px;
+  color: #7a8d8e;
+}
+
+.admin-doc-icon.ok {
+  color: #00796f;
+}
+
+.admin-row-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.admin-row-actions .icon-btn {
+  background: transparent;
+  width: 30px;
+  height: 30px;
+  color: #344;
+  font-size: 18px;
+}
+
+.admin-table-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px;
+  border-top: 1px solid #cbdadd;
+  color: #344;
+  font-size: 13px;
+  background: #fff;
+}
+
+.admin-pagination {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.admin-pagination b {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #00796f;
+  color: #fff;
+}
+
+@media (max-width: 1100px) {
+  .portal-redesign-admin {
+    grid-template-columns: 1fr;
+  }
+
+  .portal-redesign-admin .studio-sidebar {
+    position: static;
+    height: auto;
+  }
+
+  .admin-filter-row,
+  .admin-filter-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-applications-table .admin-table-head {
+    display: none;
+  }
+
+  .admin-applications-table .admin-application-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .admin-row-actions {
+    justify-content: flex-start;
+  }
+}
