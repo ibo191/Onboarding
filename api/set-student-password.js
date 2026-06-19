@@ -86,21 +86,36 @@ function rowEmail(row) {
   return normalizeEmail(row?.student_email || data.credentials?.email || applicant.email);
 }
 
+function rowHasPortalPassword(row) {
+  const credentials = row?.data?.credentials || {};
+  return Boolean(credentials.passwordHash && credentials.passwordSalt);
+}
+
+function sortPasswordSetupRows(rows) {
+  return [...rows].sort((a, b) => {
+    if (rowHasPortalPassword(a) !== rowHasPortalPassword(b)) return rowHasPortalPassword(b) ? 1 : -1;
+    if (a.source !== b.source) return a.source === "onboarding" ? -1 : 1;
+    return String(b.updated_at || "").localeCompare(String(a.updated_at || ""));
+  });
+}
+
 async function findApplicationForPasswordSetup(applicationId, email) {
   const normalizedEmail = normalizeEmail(email);
   const id = String(applicationId || "").trim();
   if (id) {
     const rows = await supabaseRequest(`applications?select=*&id=eq.${encodeURIComponent(id)}&order=updated_at.desc&limit=10`);
-    const row = Array.isArray(rows) ? rows.find((item) => !normalizedEmail || rowEmail(item) === normalizedEmail) : null;
+    const candidates = Array.isArray(rows)
+      ? rows.filter((item) => {
+        const emailFromRow = rowEmail(item);
+        return !normalizedEmail || !emailFromRow || emailFromRow === normalizedEmail;
+      })
+      : [];
+    const row = sortPasswordSetupRows(candidates)[0] || null;
     if (row?.data) return row;
   }
   if (!normalizedEmail) return null;
   const rows = await supabaseRequest(`applications?select=*&student_email=eq.${encodeURIComponent(normalizedEmail)}&order=updated_at.desc&limit=20`);
-  const row = Array.isArray(rows)
-    ? rows.find((item) => item.source === "onboarding" && rowEmail(item) === normalizedEmail)
-      || rows.find((item) => item.source === "web" && rowEmail(item) === normalizedEmail)
-      || rows.find((item) => rowEmail(item) === normalizedEmail)
-    : null;
+  const row = Array.isArray(rows) ? sortPasswordSetupRows(rows.filter((item) => rowEmail(item) === normalizedEmail))[0] : null;
   return row?.data ? row : null;
 }
 
@@ -118,7 +133,10 @@ export default async function handler(req, res) {
     const row = await findApplicationForPasswordSetup(applicationId, email);
     if (!row?.data) return json(res, 404, { error: "Application was not found" });
     const normalizedEmail = normalizeEmail(email || rowEmail(row));
-    if (!normalizedEmail || rowEmail(row) !== normalizedEmail) return json(res, 403, { error: "Application e-mail does not match" });
+    const matchedEmail = rowEmail(row);
+    if (!normalizedEmail || (matchedEmail && matchedEmail !== normalizedEmail)) {
+      return json(res, 403, { error: "Application e-mail does not match" });
+    }
 
     const passwordData = hashPassword(password);
     const portalData = portalApplicationFromWeb(row.data);
