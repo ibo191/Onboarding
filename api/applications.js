@@ -1,4 +1,4 @@
-import { json, portalBaseUrl, readBody, supabaseRequest } from "./_supabase.js";
+import { json, portalBaseUrl, randomToken, readBody, sha256, supabaseRequest } from "./_supabase.js";
 import { mailLayout, sendMail, textFromHtml } from "./_mail.js";
 
 function env(name, fallback = "") {
@@ -17,11 +17,12 @@ function portalUrl(req) {
   return `${portalBaseUrl(req)}/onboarding/index.html`;
 }
 
-function portalPasswordSetupUrl(req, applicationId, email) {
+function portalPasswordSetupUrl(req, applicationId, email, setupToken) {
   const url = new URL(portalUrl(req));
   url.searchParams.set("flow", "set-password");
   url.searchParams.set("application", applicationId);
   url.searchParams.set("email", email);
+  url.searchParams.set("setup", setupToken);
   return url.toString();
 }
 
@@ -101,21 +102,25 @@ function stepsList(items) {
     </div>`;
 }
 
-async function createPortalAccess(application, email, req) {
+function createPortalAccess(application, email, req) {
   if (!application?.id || !email) return null;
   const normalizedEmail = String(email).toLowerCase();
-  const setupUrl = portalPasswordSetupUrl(req, application.id, normalizedEmail);
+  const setupToken = randomToken(32);
+  const setupUrl = portalPasswordSetupUrl(req, application.id, normalizedEmail, setupToken);
+  const setupExpiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString();
   application.credentials = {
     ...(application.credentials || {}),
     email: normalizedEmail,
-    passwordSetupUrl: setupUrl,
     portalLoginUrl: portalUrl(req),
+    passwordSetupTokenHash: sha256(setupToken),
+    passwordSetupTokenExpiresAt: setupExpiresAt,
+    passwordSetupTokenUsedAt: "",
     passwordSet: Boolean(application.credentials?.passwordSet),
   };
   return { setupUrl, portalUrl: portalUrl(req) };
 }
 
-async function sendOrderEmails(application, req) {
+async function sendOrderEmails(application, req, portalAccess = null) {
   if (!application || application.mail?.orderEmailsSentAt) return { skipped: true };
   const applicant = applicantFromApplication(application);
   const email = String(applicant.email || application.credentials?.email || "").trim();
@@ -135,7 +140,6 @@ async function sendOrderEmails(application, req) {
   ];
   const table = detailsTable(rows);
   const result = { customer: null, admin: null, errors: {} };
-  let portalAccess = null;
 
   const adminHtml = mailLayout({
     title: "Nová přihláška do kurzu",
@@ -164,7 +168,6 @@ async function sendOrderEmails(application, req) {
 
   if (email) {
     try {
-      portalAccess = await createPortalAccess(application, email, req);
       result.portalSetupUrl = portalAccess?.setupUrl || "";
     } catch (error) {
       result.errors.passwordSetup = error.message;
@@ -256,9 +259,18 @@ export default async function handler(req, res) {
       const { source, application, sendEmails = false } = await readBody(req);
       if (!["web", "onboarding"].includes(source) || !application?.id) return json(res, 400, { error: "Invalid application payload" });
       let mailResult = null;
+      let portalAccess = null;
       if (sendEmails === true && source === "web" && (application.status || "new") === "new") {
+        const applicant = applicantFromApplication(application);
+        const email = String(applicant.email || application.credentials?.email || "").trim();
+        portalAccess = createPortalAccess(application, email, req);
+        await supabaseRequest("applications?on_conflict=id,source", {
+          method: "POST",
+          headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+          body: JSON.stringify(rowFromApplication(application, source)),
+        });
         try {
-          mailResult = await sendOrderEmails(application, req);
+          mailResult = await sendOrderEmails(application, req, portalAccess);
         } catch (error) {
           application.mail = {
             ...(application.mail || {}),
@@ -274,7 +286,16 @@ export default async function handler(req, res) {
         headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
         body: JSON.stringify(rowFromApplication(application, source)),
       });
-      return json(res, 200, { ok: true, mail: application.mail || mailResult, credentials: application.credentials || null, portalSetupUrl: mailResult?.portalSetupUrl || "" });
+      return json(res, 200, {
+        ok: true,
+        mail: application.mail || mailResult,
+        credentials: application.credentials ? {
+          email: application.credentials.email || "",
+          passwordSet: Boolean(application.credentials.passwordSet),
+          portalLoginUrl: application.credentials.portalLoginUrl || "",
+        } : null,
+        portalSetupUrl: portalAccess?.setupUrl || mailResult?.portalSetupUrl || "",
+      });
     }
     return json(res, 405, { error: "Method not allowed" });
   } catch (error) {

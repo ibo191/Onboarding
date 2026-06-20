@@ -43,7 +43,7 @@ Projekt je pripravený na postupné napojenie databázy Supabase bez zmeny stack
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `PUBLIC_SITE_URL` napr. `https://www.autoskolabubu.cz`
-   - `PORTAL_BASE_URL` napr. `https://onboarding-one-delta.vercel.app` pre odkazy na študentský portál a magic linky
+   - `PORTAL_BASE_URL` napr. `https://onboarding-one-delta.vercel.app` pre odkazy na študentský portál
    - `SMTP_HOST` server odosielanej pošty od WEDOS
    - `SMTP_PORT` najčastejšie `587`
    - `SMTP_SECURE` najčastejšie `false` pri porte 587, `true` pri porte 465
@@ -54,7 +54,7 @@ Projekt je pripravený na postupné napojenie databázy Supabase bez zmeny stack
    - `RESEND_API_KEY` voliteľný fallback, ak SMTP nie je nastavené
 4. Spustite redeploy vo Verceli.
 
-Po nastavení sa objednávky z webu, študentský portál a admin portál ukladajú do tabuľky `applications`. Magic linky sa ukladajú do `magic_links` iba ako hash tokenu a sú jednorazové s platnosťou 24 hodín. Objednávky sa zároveň posielajú do objednávkovej schránky, študentovi chodí potvrdenie a admin správy v chate aj schvaľovanie odosielajú e-mailové upozornenia študentovi. Cookie rozhodnutia sa ukladajú do `cookie_consents` s hashovanou IP adresou.
+Po nastavení sa objednávky z webu, študentský portál a admin portál ukladajú do tabuľky `applications`. Nastavenie hesla používa jednorazový setup token platný 48 hodín; v databáze sa uchováva iba jeho SHA-256 hash a po nastavení hesla sa token zneplatní. Objednávky sa zároveň posielajú do objednávkovej schránky, študentovi chodí potvrdenie a admin správy v chate aj schvaľovanie odosielajú e-mailové upozornenia študentovi. Cookie rozhodnutia sa ukladajú do `cookie_consents` s hashovanou IP adresou.
 
 ### Produkčný ďalší krok
 
@@ -62,4 +62,4 @@ Pred ostrou prevádzkou treba ešte doplniť plnohodnotnú admin session ochranu
 
 ## Poznámka
 
-Toto je postupný prechod z prototypu na produkčný systém. Databázové jadro, reálne magic linky a cookie consent log sú pripravené, ale ostrá verzia bude ešte potrebovať bezpečné úložisko dokumentov, platobnú bránu a presné napojenie na Moje autoškola.
+Toto je postupný prechod z prototypu na produkčný systém. Databázové jadro, bezpečné jednorazové nastavenie hesla a cookie consent log sú pripravené, ale ostrá verzia bude ešte potrebovať bezpečné úložisko dokumentov, platobnú bránu a presné napojenie na Moje autoškola.

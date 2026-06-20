@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import { hashPassword, json, readBody, sha256, supabaseRequest } from "./_supabase.js";
 
 const DEFAULT_BANK_ACCOUNT = "2702696953/2010";
@@ -91,10 +92,6 @@ function rowHasPortalPassword(row) {
   return Boolean(credentials.passwordHash && credentials.passwordSalt);
 }
 
-function rowMagicCredentials(row) {
-  return row?.data?.credentials || {};
-}
-
 function sortPasswordSetupRows(rows) {
   return [...rows].sort((a, b) => {
     if (rowHasPortalPassword(a) !== rowHasPortalPassword(b)) return rowHasPortalPassword(b) ? 1 : -1;
@@ -103,37 +100,17 @@ function sortPasswordSetupRows(rows) {
   });
 }
 
-function isUsableMagicCredentials(credentials, tokenHash, now = new Date()) {
-  if (!tokenHash || credentials.magicTokenHash !== tokenHash || credentials.magicTokenUsedAt) return false;
-  const expiresAt = credentials.magicTokenExpiresAt ? new Date(credentials.magicTokenExpiresAt) : null;
-  return !expiresAt || expiresAt > now;
-}
-
-async function findApplicationByMagicToken(magic) {
-  const token = String(magic || "").trim();
-  if (!token) return null;
-  const tokenHash = sha256(token);
-  const now = new Date();
-  const rows = await supabaseRequest(`magic_links?select=*&token_hash=eq.${encodeURIComponent(tokenHash)}&used_at=is.null&expires_at=gt.${encodeURIComponent(now.toISOString())}&limit=1`);
-  const magicRow = Array.isArray(rows) ? rows[0] : null;
-  if (magicRow?.application_id && magicRow?.email) {
-    const row = await findApplicationForPasswordSetup(magicRow.application_id, magicRow.email);
-    if (row?.data) return { row, email: magicRow.email, magicTokenHash: tokenHash, magicLinkId: magicRow.id };
-  }
-
-  const applicationRows = await supabaseRequest("applications?select=*&order=updated_at.desc&limit=200");
-  const row = Array.isArray(applicationRows)
-    ? sortPasswordSetupRows(applicationRows).find((item) => isUsableMagicCredentials(rowMagicCredentials(item), tokenHash, now))
-    : null;
-  if (!row?.data) return null;
-  return { row, email: rowMagicCredentials(row).email || rowEmail(row), magicTokenHash: tokenHash, magicLinkId: "" };
+function safeHashEqual(left, right) {
+  const leftBuffer = Buffer.from(String(left || ""), "utf8");
+  const rightBuffer = Buffer.from(String(right || ""), "utf8");
+  return leftBuffer.length === rightBuffer.length && crypto.timingSafeEqual(leftBuffer, rightBuffer);
 }
 
 async function findApplicationForPasswordSetup(applicationId, email) {
   const normalizedEmail = normalizeEmail(email);
   const id = String(applicationId || "").trim();
   if (id) {
-    const rows = await supabaseRequest(`applications?select=*&id=eq.${encodeURIComponent(id)}&order=updated_at.desc&limit=10`);
+    const rows = await supabaseRequest(`applications?select=*&id=eq.${encodeURIComponent(id)}&source=eq.web&order=updated_at.desc&limit=1`);
     const candidates = Array.isArray(rows)
       ? rows.filter((item) => {
         const emailFromRow = rowEmail(item);
@@ -144,7 +121,7 @@ async function findApplicationForPasswordSetup(applicationId, email) {
     if (row?.data) return row;
   }
   if (!normalizedEmail) return null;
-  const rows = await supabaseRequest(`applications?select=*&student_email=eq.${encodeURIComponent(normalizedEmail)}&order=updated_at.desc&limit=20`);
+  const rows = await supabaseRequest(`applications?select=*&source=eq.web&student_email=eq.${encodeURIComponent(normalizedEmail)}&order=updated_at.desc&limit=1`);
   const row = Array.isArray(rows) ? sortPasswordSetupRows(rows.filter((item) => rowEmail(item) === normalizedEmail))[0] : null;
   return row?.data ? row : null;
 }
@@ -152,22 +129,31 @@ async function findApplicationForPasswordSetup(applicationId, email) {
 export default async function handler(req, res) {
   if (req.method !== "POST") return json(res, 405, { error: "Method not allowed" });
   try {
-    const { email, applicationId, password, magic } = await readBody(req);
+    const { email, applicationId, password, setupToken } = await readBody(req);
     if (!password || String(password).length < 8) {
       return json(res, 400, { error: "Stronger password is required" });
     }
-    if (!email && !applicationId && !magic) {
-      return json(res, 400, { error: "Application e-mail, application ID or magic token is required" });
+    if (!email || !applicationId || !setupToken) {
+      return json(res, 400, { error: "The password setup link is incomplete" });
     }
 
-    const magicMatch = magic ? await findApplicationByMagicToken(magic) : null;
-    const row = magicMatch?.row || await findApplicationForPasswordSetup(applicationId, email);
+    const row = await findApplicationForPasswordSetup(applicationId, email);
     if (!row?.data) return json(res, 404, { error: "Application was not found" });
-    const normalizedEmail = normalizeEmail(email || magicMatch?.email || rowEmail(row));
+    const normalizedEmail = normalizeEmail(email);
     const matchedEmail = rowEmail(row);
     if (!normalizedEmail || (matchedEmail && matchedEmail !== normalizedEmail)) {
       return json(res, 403, { error: "Application e-mail does not match" });
     }
+    const sourceCredentials = row.data.credentials || {};
+    const setupExpiresAt = sourceCredentials.passwordSetupTokenExpiresAt
+      ? new Date(sourceCredentials.passwordSetupTokenExpiresAt)
+      : null;
+    const validSetupToken = sourceCredentials.passwordSetupTokenHash
+      && !sourceCredentials.passwordSetupTokenUsedAt
+      && setupExpiresAt
+      && setupExpiresAt > new Date()
+      && safeHashEqual(sourceCredentials.passwordSetupTokenHash, sha256(String(setupToken)));
+    if (!validSetupToken) return json(res, 403, { error: "The password setup link is invalid or expired" });
 
     const passwordData = hashPassword(password);
     const portalData = portalApplicationFromWeb(row.data);
@@ -183,7 +169,6 @@ export default async function handler(req, res) {
         passwordAlgorithm: passwordData.algorithm,
         passwordIterations: passwordData.iterations,
         passwordSet: true,
-        ...(magicMatch?.magicTokenHash ? { magicTokenUsedAt: new Date().toISOString() } : {}),
       },
     };
     await supabaseRequest("applications?on_conflict=id,source", {
@@ -191,13 +176,21 @@ export default async function handler(req, res) {
       headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
       body: JSON.stringify(rowFromApplication(nextData)),
     });
-    if (magicMatch?.magicLinkId) {
-      await supabaseRequest(`magic_links?id=eq.${encodeURIComponent(magicMatch.magicLinkId)}`, {
-        method: "PATCH",
-        headers: { Prefer: "return=minimal" },
-        body: JSON.stringify({ used_at: new Date().toISOString() }),
-      });
-    }
+    const usedAt = new Date().toISOString();
+    const sourceData = {
+      ...row.data,
+      credentials: {
+        ...(row.data.credentials || {}),
+        passwordSet: true,
+        passwordSetupTokenHash: "",
+        passwordSetupTokenUsedAt: usedAt,
+      },
+    };
+    await supabaseRequest("applications?on_conflict=id,source", {
+      method: "POST",
+      headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+      body: JSON.stringify({ ...row, data: sourceData, updated_at: usedAt }),
+    });
     return json(res, 200, { ok: true, applicationId: row.id, application: nextData });
   } catch (error) {
     return json(res, 500, { error: "Password could not be saved", detail: error.message });

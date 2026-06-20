@@ -5,7 +5,7 @@ function env(name, fallback = "") {
 }
 
 function fromAddress() {
-  return env("MAIL_FROM", env("MAGIC_LINK_FROM_EMAIL", "Autoškola BuBu <info@autoskolabubu.cz>"));
+  return env("MAIL_FROM", "Autoškola BuBu <info@autoskolabubu.cz>");
 }
 
 function smtpReady() {

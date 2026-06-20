@@ -17,7 +17,7 @@ export default function handler(req, res) {
     smtpSecure: env("SMTP_SECURE"),
     smtpUser: present("SMTP_USER"),
     smtpPass: present("SMTP_PASS"),
-    mailFrom: env("MAIL_FROM", env("MAGIC_LINK_FROM_EMAIL")),
+    mailFrom: env("MAIL_FROM"),
     ordersEmail: env("ORDERS_EMAIL", env("ADMIN_EMAIL", "objednavky@autoskolabubu.cz")),
     resendFallbackConfigured: present("RESEND_API_KEY"),
   });
