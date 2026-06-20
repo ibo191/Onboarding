@@ -48,7 +48,9 @@
 
   async function upsertApplication(application, source, options = {}) {
     if (!application?.id) return null;
-    return apiPost("/api/applications", { source, application, ...options }).catch((error) => {
+    const request = apiPost("/api/applications", { source, application, ...options });
+    if (options.sendEmails === true || options.requireSuccess === true) return request;
+    return request.catch((error) => {
       console.warn("Supabase sync failed", error);
       return null;
     });

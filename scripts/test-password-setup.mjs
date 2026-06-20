@@ -7,7 +7,9 @@ process.env.SUPABASE_URL = "https://example.supabase.co";
 process.env.SUPABASE_SERVICE_ROLE_KEY = "service-role";
 process.env.PORTAL_BASE_URL = "https://portal.example.com";
 delete process.env.SMTP_HOST;
-delete process.env.RESEND_API_KEY;
+process.env.RESEND_API_KEY = "test-key";
+let releaseMail;
+const mailGate = new Promise((resolve) => { releaseMail = resolve; });
 const rows = new Map();
 const writes = [];
 const keyFor = (row) => row.id + ":" + row.source;
@@ -27,13 +29,20 @@ globalThis.fetch = async (url, options = {}) => {
     const row = rows.get("order-123:onboarding");
     return Response.json(row ? [structuredClone(row)] : []);
   }
+  if (requestUrl === "https://api.resend.com/emails") {
+    await mailGate;
+    return Response.json({ id: "mail-test" });
+  }
   throw new Error("Unexpected fetch: " + requestUrl);
 };
 function createRes() { return { statusCode: 0, headers: {}, body: null, setHeader(key, value) { this.headers[key] = value; }, status(code) { this.statusCode = code; return this; }, json(payload) { this.body = payload; return this; } }; }
 const application = { id: "order-123", status: "new", courseTitle: "Skupina B", student: { firstName: "Jan", lastName: "Novak", email: "Jan.Novak@Example.cz", phone: "+420123456789" }, credentials: { email: "Jan.Novak@Example.cz", passwordSet: false }, payment: { amount: 19900 } };
 const orderRes = createRes();
-await applicationsHandler({ method: "POST", headers: { host: "www.example.com" }, body: { source: "web", application, sendEmails: true } }, orderRes);
+const orderRequest = applicationsHandler({ method: "POST", headers: { host: "www.example.com" }, body: { source: "web", application, sendEmails: true } }, orderRes);
+while (!orderRes.statusCode) await new Promise((resolve) => setImmediate(resolve));
 assert.equal(orderRes.statusCode, 200);
+releaseMail();
+await orderRequest;
 assert.equal(orderRes.body.ok, true);
 const setupUrl = new URL(orderRes.body.portalSetupUrl);
 const setupToken = setupUrl.searchParams.get("setup");

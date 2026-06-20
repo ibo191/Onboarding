@@ -258,19 +258,27 @@ export default async function handler(req, res) {
     if (req.method === "POST") {
       const { source, application, sendEmails = false } = await readBody(req);
       if (!["web", "onboarding"].includes(source) || !application?.id) return json(res, 400, { error: "Invalid application payload" });
-      let mailResult = null;
-      let portalAccess = null;
       if (sendEmails === true && source === "web" && (application.status || "new") === "new") {
         const applicant = applicantFromApplication(application);
         const email = String(applicant.email || application.credentials?.email || "").trim();
-        portalAccess = createPortalAccess(application, email, req);
+        const portalAccess = createPortalAccess(application, email, req);
         await supabaseRequest("applications?on_conflict=id,source", {
           method: "POST",
           headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
           body: JSON.stringify(rowFromApplication(application, source)),
         });
+        json(res, 200, {
+          ok: true,
+          mail: null,
+          credentials: application.credentials ? {
+            email: application.credentials.email || "",
+            passwordSet: Boolean(application.credentials.passwordSet),
+            portalLoginUrl: application.credentials.portalLoginUrl || "",
+          } : null,
+          portalSetupUrl: portalAccess?.setupUrl || "",
+        });
         try {
-          mailResult = await sendOrderEmails(application, req, portalAccess);
+          await sendOrderEmails(application, req, portalAccess);
         } catch (error) {
           application.mail = {
             ...(application.mail || {}),
@@ -278,8 +286,17 @@ export default async function handler(req, res) {
             orderEmailError: error.message,
             ordersEmail: ordersEmail(),
           };
-          mailResult = { sent: false, error: error.message };
         }
+        try {
+          await supabaseRequest("applications?on_conflict=id,source", {
+            method: "POST",
+            headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+            body: JSON.stringify(rowFromApplication(application, source)),
+          });
+        } catch (error) {
+          console.error("Order e-mail status could not be saved", error);
+        }
+        return;
       }
       await supabaseRequest("applications?on_conflict=id,source", {
         method: "POST",
@@ -288,13 +305,13 @@ export default async function handler(req, res) {
       });
       return json(res, 200, {
         ok: true,
-        mail: application.mail || mailResult,
+        mail: application.mail || null,
         credentials: application.credentials ? {
           email: application.credentials.email || "",
           passwordSet: Boolean(application.credentials.passwordSet),
           portalLoginUrl: application.credentials.portalLoginUrl || "",
         } : null,
-        portalSetupUrl: portalAccess?.setupUrl || mailResult?.portalSetupUrl || "",
+        portalSetupUrl: "",
       });
     }
     return json(res, 405, { error: "Method not allowed" });
