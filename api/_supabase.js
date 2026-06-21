@@ -16,28 +16,51 @@ export async function readBody(req) {
 }
 
 export function supabaseEnv() {
-  const url = process.env.SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !serviceKey) {
-    throw new Error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+  const rawUrl = String(process.env.SUPABASE_URL || "").trim().replace(/^["']|["']$/g, "");
+  const serviceKey = String(
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+      || process.env.SUPABASE_SERVICE_KEY
+      || process.env.SERVICE_ROLE_KEY
+      || process.env.SERVICE_KEY
+      || "",
+  ).trim().replace(/^["']|["']$/g, "");
+  if (!rawUrl || !serviceKey) {
+    throw new Error("Missing SUPABASE_URL or Supabase service key");
   }
-  return { url, serviceKey };
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(rawUrl);
+  } catch {
+    throw new Error("SUPABASE_URL is not a valid URL");
+  }
+  if (parsedUrl.protocol !== "https:") throw new Error("SUPABASE_URL must use HTTPS");
+  const pathname = parsedUrl.pathname.replace(/\/rest\/v1\/?$/i, "").replace(/\/+$/, "");
+  return { url: parsedUrl.origin + pathname, serviceKey };
 }
 
 export async function supabaseRequest(path, options = {}) {
   const { url, serviceKey } = supabaseEnv();
-  const response = await fetch(`${url}/rest/v1/${path}`, {
-    ...options,
-    headers: {
-      apikey: serviceKey,
-      Authorization: `Bearer ${serviceKey}`,
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
-  });
+  const isSecretKey = serviceKey.startsWith("sb_secret_");
+  let response;
+  try {
+    response = await fetch(url + "/rest/v1/" + path, {
+      ...options,
+      signal: options.signal || AbortSignal.timeout(12000),
+      headers: {
+        apikey: serviceKey,
+        ...(isSecretKey ? {} : { Authorization: "Bearer " + serviceKey }),
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
+      },
+    });
+  } catch (error) {
+    const cause = error?.cause;
+    const detail = [cause?.code, cause?.message].filter(Boolean).join(": ") || error?.message || "unknown network error";
+    throw new Error("Supabase connection failed: " + detail);
+  }
   if (!response.ok) {
     const message = await response.text().catch(() => response.statusText);
-    throw new Error(`Supabase ${response.status}: ${message}`);
+    throw new Error("Supabase " + response.status + ": " + message);
   }
   if (response.status === 204) return null;
   return response.json();
