@@ -63,7 +63,8 @@ export async function supabaseRequest(path, options = {}) {
     throw new Error("Supabase " + response.status + ": " + message);
   }
   if (response.status === 204) return null;
-  return response.json();
+  const responseText = await response.text();
+  return responseText ? JSON.parse(responseText) : null;
 }
 
 export function randomToken(bytes = 32) {

@@ -21,7 +21,7 @@ globalThis.fetch = async (url, options = {}) => {
     const row = JSON.parse(options.body);
     rows.set(keyFor(row), structuredClone(row));
     writes.push(structuredClone(row));
-    return new Response(null, { status: 204 });
+    return new Response(null, { status: 201 });
   }
   if (requestUrl.includes("applications?select=*&id=eq.order-123&source=eq.web")) {
     const row = rows.get("order-123:web");
