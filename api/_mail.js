@@ -18,6 +18,9 @@ function smtpTransport() {
     host: env("SMTP_HOST"),
     port: Number(env("SMTP_PORT", secure ? "465" : "587")),
     secure,
+    connectionTimeout: Number(env("SMTP_CONNECTION_TIMEOUT", "8000")),
+    greetingTimeout: Number(env("SMTP_GREETING_TIMEOUT", "8000")),
+    socketTimeout: Number(env("SMTP_SOCKET_TIMEOUT", "10000")),
     auth: {
       user: env("SMTP_USER"),
       pass: env("SMTP_PASS"),

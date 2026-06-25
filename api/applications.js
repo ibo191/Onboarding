@@ -154,17 +154,19 @@ async function sendOrderEmails(application, req, portalAccess = null) {
     `,
     footer: "Interní upozornění pro Autoškolu BuBu.",
   });
-  try {
-    result.admin = await sendMail({
+  const mailTasks = [
+    sendMail({
       to: ordersEmail(),
       subject: `Nová přihláška: ${fullName} - ${course.title} | Autoškola BuBu`,
       ...(email ? { replyTo: `${fullName} <${email}>` } : {}),
       html: adminHtml,
       text: textFromHtml(adminHtml),
-    });
-  } catch (error) {
-    result.errors.admin = error.message;
-  }
+    }).then((mail) => {
+      result.admin = mail;
+    }).catch((error) => {
+      result.errors.admin = error.message;
+    }),
+  ];
 
   if (email) {
     try {
@@ -205,24 +207,26 @@ async function sendOrderEmails(application, req, portalAccess = null) {
       `,
       footer: "Autoškola BuBu · Řidičák bez stresu",
     });
-    try {
-      result.customer = await sendMail({
+    mailTasks.push(sendMail({
         to: email,
         subject: `Potvrzení přihlášky: ${course.title} | Autoškola BuBu`,
         html: customerHtml,
         text: textFromHtml(customerHtml),
-      });
-    } catch (error) {
+      }).then((mail) => {
+        result.customer = mail;
+      }).catch((error) => {
       result.errors.customer = error.message;
-    }
+    }));
   }
+
+  await Promise.all(mailTasks);
 
   const anySent = Boolean(result.admin?.sent || result.customer?.sent);
   application.mail = {
     ...(application.mail || {}),
     ...(anySent
       ? { orderEmailsSentAt: new Date().toISOString() }
-      : { orderEmailSkippedAt: new Date().toISOString(), orderEmailSkippedReason: "smtp_not_configured" }),
+      : { orderEmailSkippedAt: new Date().toISOString(), orderEmailSkippedReason: result.errors.admin || result.errors.customer ? "mail_delivery_failed" : "smtp_not_configured" }),
     orderEmailProvider: result.admin?.provider || result.customer?.provider || "unknown",
     ordersEmail: ordersEmail(),
     ...(result.errors.admin ? { adminOrderEmailError: result.errors.admin } : {}),
@@ -287,18 +291,9 @@ export default async function handler(req, res) {
           headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
           body: JSON.stringify(rowFromApplication(application, source)),
         });
-        json(res, 200, {
-          ok: true,
-          mail: null,
-          credentials: application.credentials ? {
-            email: application.credentials.email || "",
-            passwordSet: Boolean(application.credentials.passwordSet),
-            portalLoginUrl: application.credentials.portalLoginUrl || "",
-          } : null,
-          portalSetupUrl: portalAccess?.setupUrl || "",
-        });
+        let mailResult = null;
         try {
-          await sendOrderEmails(application, req, portalAccess);
+          mailResult = await sendOrderEmails(application, req, portalAccess);
         } catch (error) {
           application.mail = {
             ...(application.mail || {}),
@@ -316,7 +311,17 @@ export default async function handler(req, res) {
         } catch (error) {
           console.error("Order e-mail status could not be saved", error);
         }
-        return;
+        return json(res, 200, {
+          ok: true,
+          mail: application.mail || null,
+          mailResult,
+          credentials: application.credentials ? {
+            email: application.credentials.email || "",
+            passwordSet: Boolean(application.credentials.passwordSet),
+            portalLoginUrl: application.credentials.portalLoginUrl || "",
+          } : null,
+          portalSetupUrl: portalAccess?.setupUrl || "",
+        });
       }
       const applicationToSave = await preservePasswordSetupToken(application, source);
       await supabaseRequest("applications?on_conflict=id,source", {

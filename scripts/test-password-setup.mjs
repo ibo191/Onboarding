@@ -13,6 +13,7 @@ const mailGate = new Promise((resolve) => { releaseMail = resolve; });
 const rows = new Map();
 const writes = [];
 const supabaseHeaders = [];
+const sentEmails = [];
 const keyFor = (row) => row.id + ":" + row.source;
 globalThis.fetch = async (url, options = {}) => {
   const requestUrl = String(url);
@@ -36,6 +37,7 @@ globalThis.fetch = async (url, options = {}) => {
     return Response.json(row ? [structuredClone(row)] : []);
   }
   if (requestUrl === "https://api.resend.com/emails") {
+    sentEmails.push(JSON.parse(options.body));
     await mailGate;
     return Response.json({ id: "mail-test" });
   }
@@ -45,11 +47,16 @@ function createRes() { return { statusCode: 0, headers: {}, body: null, setHeade
 const application = { id: "order-123", status: "new", courseTitle: "Skupina B", student: { firstName: "Jan", lastName: "Novak", email: "Jan.Novak@Example.cz", phone: "+420123456789" }, credentials: { email: "Jan.Novak@Example.cz", passwordSet: false }, payment: { amount: 19900 } };
 const orderRes = createRes();
 const orderRequest = applicationsHandler({ method: "POST", headers: { host: "www.example.com" }, body: { source: "web", application, sendEmails: true } }, orderRes);
-while (!orderRes.statusCode) await new Promise((resolve) => setImmediate(resolve));
-assert.equal(orderRes.statusCode, 200);
+await new Promise((resolve) => setImmediate(resolve));
+assert.equal(orderRes.statusCode, 0);
+assert.equal(sentEmails.length, 2);
 releaseMail();
 await orderRequest;
+assert.equal(orderRes.statusCode, 200);
 assert.equal(orderRes.body.ok, true);
+assert.equal(orderRes.body.mail.orderEmailProvider, "resend");
+assert.ok(orderRes.body.mail.orderEmailsSentAt);
+assert.deepEqual(sentEmails.map((email) => String(email.to[0]).toLowerCase()).sort(), ["jan.novak@example.cz", "objednavky@autoskolabubu.cz"]);
 assert.ok(supabaseHeaders.length > 0);
 assert.equal(supabaseHeaders[0].apikey, "sb_secret_test");
 assert.equal("Authorization" in supabaseHeaders[0], false);
