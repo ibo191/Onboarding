@@ -32,6 +32,13 @@
 .admin-profile-modal,.fullscreen-modal{border:1px solid rgba(47,90,166,.18);border-top:4px solid var(--portal-blue);border-radius:14px;background:#f8fbfc;box-shadow:0 26px 70px rgba(23,33,43,.22)}
 .admin-profile-modal .fullscreen-head,.fullscreen-modal .fullscreen-head{border-bottom:1px solid var(--portal-line);background:linear-gradient(90deg,#f6fcfb,#eef5fb)}
 .portal-table-actions .icon-btn.danger{border:1px solid #ffc9cf}
+.portal-status-pill.status-new{background:#ffe1e4!important;color:#b4232f!important;border-color:#ffc4ca}
+.portal-status-pill.status-student_completed{background:#dcecff!important;color:#2457b8!important;border-color:#bcd6ff}
+.portal-status-pill.status-approved,.portal-status-pill.status-resolved{background:#d9f7e7!important;color:#067647!important;border-color:#a8eac6}
+.message-indicator{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;padding:0 10px;border:1px solid var(--portal-line);border-radius:999px;background:#fff;color:var(--portal-muted);font-weight:900}
+.message-indicator span{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:999px;background:#eef2f6;color:var(--portal-muted);font-size:12px}
+.message-indicator.has-message{border-color:#2f5aa6;background:#eaf2ff;color:#1f4ea3;box-shadow:0 8px 18px rgba(47,90,166,.14)}
+.message-indicator.has-message span{background:#2f5aa6;color:#fff}
 
 * {
   box-sizing: border-box;
