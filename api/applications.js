@@ -247,6 +247,26 @@ function rowFromApplication(application, source) {
   };
 }
 
+async function preservePasswordSetupToken(application, source) {
+  if (source !== "web" || !application?.id) return application;
+  const credentials = application.credentials || {};
+  if (credentials.passwordSetupTokenHash || credentials.passwordSetupTokenUsedAt) return application;
+
+  const rows = await supabaseRequest(`applications?select=data&id=eq.${encodeURIComponent(application.id)}&source=eq.web&limit=1`);
+  const existingCredentials = Array.isArray(rows) ? rows[0]?.data?.credentials || {} : {};
+  if (!existingCredentials.passwordSetupTokenHash && !existingCredentials.passwordSetupTokenUsedAt) return application;
+
+  return {
+    ...application,
+    credentials: {
+      ...credentials,
+      passwordSetupTokenHash: existingCredentials.passwordSetupTokenHash || "",
+      passwordSetupTokenExpiresAt: existingCredentials.passwordSetupTokenExpiresAt || "",
+      passwordSetupTokenUsedAt: existingCredentials.passwordSetupTokenUsedAt || "",
+    },
+  };
+}
+
 export default async function handler(req, res) {
   try {
     if (req.method === "GET") {
@@ -298,18 +318,19 @@ export default async function handler(req, res) {
         }
         return;
       }
+      const applicationToSave = await preservePasswordSetupToken(application, source);
       await supabaseRequest("applications?on_conflict=id,source", {
         method: "POST",
         headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
-        body: JSON.stringify(rowFromApplication(application, source)),
+        body: JSON.stringify(rowFromApplication(applicationToSave, source)),
       });
       return json(res, 200, {
         ok: true,
-        mail: application.mail || null,
-        credentials: application.credentials ? {
-          email: application.credentials.email || "",
-          passwordSet: Boolean(application.credentials.passwordSet),
-          portalLoginUrl: application.credentials.portalLoginUrl || "",
+        mail: applicationToSave.mail || null,
+        credentials: applicationToSave.credentials ? {
+          email: applicationToSave.credentials.email || "",
+          passwordSet: Boolean(applicationToSave.credentials.passwordSet),
+          portalLoginUrl: applicationToSave.credentials.portalLoginUrl || "",
         } : null,
         portalSetupUrl: "",
       });

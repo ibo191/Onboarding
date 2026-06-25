@@ -23,6 +23,10 @@ globalThis.fetch = async (url, options = {}) => {
     writes.push(structuredClone(row));
     return new Response(null, { status: 201 });
   }
+  if (requestUrl.includes("applications?select=data&id=eq.order-123&source=eq.web")) {
+    const row = rows.get("order-123:web");
+    return Response.json(row ? [{ data: structuredClone(row.data) }] : []);
+  }
   if (requestUrl.includes("applications?select=*&id=eq.order-123&source=eq.web")) {
     const row = rows.get("order-123:web");
     return Response.json(row ? [structuredClone(row)] : []);
@@ -58,6 +62,18 @@ const storedWebRow = rows.get("order-123:web");
 assert.equal(storedWebRow.data.credentials.passwordSetupTokenHash, sha256(setupToken));
 assert.equal(JSON.stringify(storedWebRow).includes(setupToken), false);
 assert.equal("passwordSetupTokenHash" in orderRes.body.credentials, false);
+const publicSyncApplication = structuredClone(application);
+publicSyncApplication.credentials = {
+  email: "jan.novak@example.cz",
+  passwordSet: false,
+  passwordSetupUrl: orderRes.body.portalSetupUrl,
+  portalLoginUrl: "https://portal.example.com/onboarding/index.html",
+};
+const publicSyncRes = createRes();
+await applicationsHandler({ method: "POST", headers: { host: "www.example.com" }, body: { source: "web", application: publicSyncApplication } }, publicSyncRes);
+assert.equal(publicSyncRes.statusCode, 200);
+assert.equal(rows.get("order-123:web").data.credentials.passwordSetupTokenHash, sha256(setupToken));
+assert.equal(rows.get("order-123:web").data.credentials.passwordSetupTokenExpiresAt, storedWebRow.data.credentials.passwordSetupTokenExpiresAt);
 const passwordRes = createRes();
 await passwordHandler({ method: "POST", body: { applicationId: "order-123", email: "jan.novak@example.cz", setupToken, password: "BezpecneHeslo123" } }, passwordRes);
 assert.equal(passwordRes.statusCode, 200);
