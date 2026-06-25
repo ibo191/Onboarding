@@ -39,6 +39,13 @@
 .message-indicator span{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:999px;background:#eef2f6;color:var(--portal-muted);font-size:12px}
 .message-indicator.has-message{border-color:#2f5aa6;background:#eaf2ff;color:#1f4ea3;box-shadow:0 8px 18px rgba(47,90,166,.14)}
 .message-indicator.has-message span{background:#2f5aa6;color:#fff}
+.admin-manual-order-modal{display:grid;gap:18px;max-height:calc(100vh - 32px);overflow:auto;background:#f8fbfc}
+.admin-manual-section{display:grid;gap:14px;padding:16px;border:1px solid var(--portal-line);border-radius:10px;background:#fff}
+.admin-manual-section h3{margin:0;color:var(--portal-blue);font-size:16px}
+.manual-upsell-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.manual-upsell-card{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;padding:12px;border:1px solid var(--portal-line);border-radius:8px;background:#f8fbfc;font-weight:700}
+.manual-upsell-card input{width:18px;min-height:18px}
+.manual-upsell-card small{display:block;margin-top:2px;color:var(--portal-blue);font-weight:900}
 
 * {
   box-sizing: border-box;
