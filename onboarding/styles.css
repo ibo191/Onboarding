@@ -25,6 +25,13 @@
 .chat-message.mine,.chat-message.mine small,.chat-message.mine p{color:#fff!important}
 .generated-application-card{border-color:#bfe9e4;background:#f6fcfb}
 .generated-application-card .portal-doc-actions{margin-top:18px}
+.portal-pagination{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:16px;padding:14px 16px;border:1px solid var(--portal-line);border-radius:10px;background:#fff;color:var(--portal-muted);font-size:13px;font-weight:800}
+.portal-pagination>div{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.portal-pagination button{min-height:38px;padding:0 12px;border-radius:8px}
+.portal-pagination button[disabled]{opacity:.45;cursor:not-allowed}
+.admin-profile-modal,.fullscreen-modal{border:1px solid rgba(47,90,166,.18);border-top:4px solid var(--portal-blue);border-radius:14px;background:#f8fbfc;box-shadow:0 26px 70px rgba(23,33,43,.22)}
+.admin-profile-modal .fullscreen-head,.fullscreen-modal .fullscreen-head{border-bottom:1px solid var(--portal-line);background:linear-gradient(90deg,#f6fcfb,#eef5fb)}
+.portal-table-actions .icon-btn.danger{border:1px solid #ffc9cf}
 
 * {
   box-sizing: border-box;
