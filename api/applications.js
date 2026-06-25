@@ -13,6 +13,10 @@ function siteUrl(path = "") {
   return `${env("PUBLIC_SITE_URL", "https://www.autoskolabubu.cz")}${path}`;
 }
 
+function adminPortalUrl(req) {
+  return `${portalBaseUrl(req)}/onboarding/index.html#admin`;
+}
+
 function portalUrl(req) {
   return `${portalBaseUrl(req)}/onboarding/index.html`;
 }
@@ -144,7 +148,7 @@ async function sendOrderEmails(application, req, portalAccess = null) {
   const adminHtml = mailLayout({
     title: "Nová přihláška do kurzu",
     intro: `${escapeHtml(fullName)} právě odeslal/a objednávku z webu. Níže je rychlý přehled pro zpracování v admin portálu.`,
-    buttonUrl: siteUrl("/admin"),
+    buttonUrl: adminPortalUrl(req),
     buttonText: "Otevřít admin portál",
     children: `
       ${infoBox("Kurz", `${course.title}${course.packageName ? ` · ${course.packageName}` : ""}`)}
@@ -280,7 +284,16 @@ export default async function handler(req, res) {
       return json(res, 200, { applications: Array.isArray(rows) ? rows.map((row) => row.data).filter(Boolean) : [] });
     }
     if (req.method === "POST") {
-      const { source, application, sendEmails = false } = await readBody(req);
+      const { source, application, sendEmails = false, deleteApplicationId = "" } = await readBody(req);
+      if (deleteApplicationId) {
+        const applicationId = String(deleteApplicationId).trim();
+        if (!applicationId) return json(res, 400, { error: "Invalid application payload" });
+        await supabaseRequest(`applications?id=eq.${encodeURIComponent(applicationId)}`, {
+          method: "DELETE",
+          headers: { Prefer: "return=minimal" },
+        });
+        return json(res, 200, { ok: true, deleted: applicationId });
+      }
       if (!["web", "onboarding"].includes(source) || !application?.id) return json(res, 400, { error: "Invalid application payload" });
       if (sendEmails === true && source === "web" && (application.status || "new") === "new") {
         const applicant = applicantFromApplication(application);

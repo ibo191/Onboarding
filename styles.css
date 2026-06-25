@@ -73,6 +73,9 @@ html,body{max-width:100%;overflow-x:hidden}.main,.site-shell{min-width:0}.btn{mi
   .admin-studio{display:block}.studio-sidebar{position:static;height:auto;padding:16px}.studio-menu{grid-template-columns:1fr 1fr}.studio-main{padding:18px 12px}.studio-top{display:grid;gap:14px}.studio-top h1{font-size:36px!important}.admin-table-head{display:none}.admin-table-row,.product-row{display:grid!important;grid-template-columns:1fr!important;gap:10px;padding:16px!important}
   .footer-grid,.footer-grid-wide{grid-template-columns:1fr!important}
 }
+
+.thank-you-card .hero-actions{margin-top:28px;padding-top:20px;border-top:1px solid var(--line)}
+.password-setup-link-box.btn{display:inline-flex;width:max-content;max-width:100%;min-height:46px;padding:0 18px;overflow-wrap:normal;font-size:14px}
 @media(max-width:420px){
   .brand-logo{height:40px}.mobile-menu-toggle{width:42px;height:42px}
   h1{font-size:34px!important}.section{padding-left:12px;padding-right:12px}

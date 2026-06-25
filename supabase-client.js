@@ -81,6 +81,7 @@
     getConfig,
     upsertWebApplication: (application, options) => upsertApplication(application, "web", options),
     upsertPortalApplication: (application) => upsertApplication(application, "onboarding"),
+    deleteApplication: (applicationId) => apiPost("/api/applications", { deleteApplicationId: applicationId }),
     fetchWebApplications: () => fetchApplications("web"),
     fetchPortalApplications: () => fetchApplications("onboarding"),
     notifyStudent: (applicationId, type, message) => apiPost("/api/notify-student", { applicationId, type, message }),

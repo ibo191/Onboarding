@@ -15,6 +15,14 @@
   --shadow: 0 16px 40px rgba(23, 33, 43, 0.08);
 }
 
+.portal-table-actions .icon-btn.danger{background:#ffe7e9;color:#c43c45}
+.admin-manual-order-modal{width:min(980px,calc(100vw - 28px));border-top:4px solid var(--portal-teal)}
+.admin-manual-order-modal h2{color:var(--portal-ink)}
+.modal-card .faq-list{display:grid;gap:10px;margin-top:18px}
+.modal-card .faq-item{border:1px solid var(--portal-line);border-radius:8px;background:#fff;padding:14px}
+.modal-card .faq-item summary{cursor:pointer;font-weight:900;color:var(--portal-blue)}
+.portal-sidebar-foot button{width:100%;text-align:left}
+
 * {
   box-sizing: border-box;
 }

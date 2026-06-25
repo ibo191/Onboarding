@@ -1,6 +1,14 @@
 import { json, portalBaseUrl, readBody, supabaseRequest } from "./_supabase.js";
 import { mailLayout, sendMail, textFromHtml } from "./_mail.js";
 
+function env(name, fallback = "") {
+  return String(process.env[name] || fallback).trim();
+}
+
+function ordersEmail() {
+  return env("ORDERS_EMAIL", env("ADMIN_EMAIL", "objednavky@autoskolabubu.cz"));
+}
+
 function escapeHtml(value = "") {
   return String(value)
     .replace(/&/g, "&amp;")
@@ -68,6 +76,19 @@ function notificationContent(type, message, baseUrl) {
   };
 }
 
+function adminNotificationContent(message, application) {
+  const applicant = applicantFromApplication(application);
+  const safeMessage = message
+    ? `<div style="margin:18px 0;padding:14px 16px;border-radius:12px;background:#f4f8f8;border:1px solid #d7e2ea;color:#344054">${escapeHtml(message)}</div>`
+    : "";
+  return {
+    subject: `Nová zpráva od studenta: ${studentName(application)} | Autoškola BuBu`,
+    title: "Student poslal novou zprávu",
+    intro: `${escapeHtml(studentName(application))} poslal/a zprávu ve studentském portálu. E-mail: ${escapeHtml(applicant.email || "")}.`,
+    children: safeMessage,
+  };
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") return json(res, 405, { error: "Method not allowed" });
   try {
@@ -76,6 +97,23 @@ export default async function handler(req, res) {
 
     const application = await findApplication(applicationId);
     if (!application) return json(res, 404, { error: "Application not found" });
+
+    if (type === "student_chat_message") {
+      const content = adminNotificationContent(message, application);
+      const html = mailLayout({
+        title: content.title,
+        intro: content.intro,
+        children: content.children,
+        footer: "Automatické upozornění ze studentského portálu Autoškoly BuBu.",
+      });
+      const result = await sendMail({
+        to: ordersEmail(),
+        subject: content.subject,
+        html,
+        text: textFromHtml(html),
+      });
+      return json(res, 200, { ok: true, emailSent: result.sent, provider: result.provider, to: ordersEmail() });
+    }
 
     const email = studentEmail(application);
     if (!email) return json(res, 400, { error: "Student e-mail is missing" });

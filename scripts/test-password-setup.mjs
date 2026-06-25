@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import applicationsHandler from "../api/applications.js";
+import notifyHandler from "../api/notify-student.js";
 import passwordHandler from "../api/set-student-password.js";
 import loginHandler from "../api/student-login.js";
 import { sha256, supabaseRequest, verifyPassword } from "../api/_supabase.js";
@@ -23,6 +24,14 @@ globalThis.fetch = async (url, options = {}) => {
     rows.set(keyFor(row), structuredClone(row));
     writes.push(structuredClone(row));
     return new Response(null, { status: 201 });
+  }
+  if (requestUrl.includes("applications?id=eq.order-123") && options.method === "DELETE") {
+    rows.delete("order-123:web");
+    rows.delete("order-123:onboarding");
+    return new Response(null, { status: 204 });
+  }
+  if (requestUrl.includes("applications?select=source,data&id=eq.order-123&order=updated_at.desc&limit=5")) {
+    return Response.json([...rows.values()].filter((row) => row.id === "order-123").map((row) => ({ source: row.source, data: structuredClone(row.data) })));
   }
   if (requestUrl.includes("applications?select=data&id=eq.order-123&source=eq.web")) {
     const row = rows.get("order-123:web");
@@ -99,6 +108,19 @@ assert.equal(loginRes.body.applicationId, "order-123");
 const reuseRes = createRes();
 await passwordHandler({ method: "POST", body: { applicationId: "order-123", email: "jan.novak@example.cz", setupToken, password: "IneBezpecneHeslo123" } }, reuseRes);
 assert.equal(reuseRes.statusCode, 403);
+const notifyRes = createRes();
+await notifyHandler({ method: "POST", headers: { host: "www.example.com" }, body: { applicationId: "order-123", type: "student_chat_message", message: "Potřebuji poradit se zdravotním posudkem." } }, notifyRes);
+assert.equal(notifyRes.statusCode, 200);
+assert.equal(notifyRes.body.ok, true);
+assert.equal(notifyRes.body.to, "objednavky@autoskolabubu.cz");
+assert.equal(sentEmails.at(-1).to[0], "objednavky@autoskolabubu.cz");
+assert.match(sentEmails.at(-1).subject, /Nová zpráva od studenta/);
+const deleteRes = createRes();
+await applicationsHandler({ method: "POST", headers: { host: "www.example.com" }, body: { deleteApplicationId: "order-123" } }, deleteRes);
+assert.equal(deleteRes.statusCode, 200);
+assert.equal(deleteRes.body.deleted, "order-123");
+assert.equal(rows.has("order-123:web"), false);
+assert.equal(rows.has("order-123:onboarding"), false);
 const networkError = new TypeError("fetch failed");
 networkError.cause = { code: "ENOTFOUND", message: "getaddrinfo failed" };
 globalThis.fetch = async () => { throw networkError; };
