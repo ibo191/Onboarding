@@ -22,6 +22,9 @@
 .modal-card .faq-item{border:1px solid var(--portal-line);border-radius:8px;background:#fff;padding:14px}
 .modal-card .faq-item summary{cursor:pointer;font-weight:900;color:var(--portal-blue)}
 .portal-sidebar-foot button{width:100%;text-align:left}
+.chat-message.mine,.chat-message.mine small,.chat-message.mine p{color:#fff!important}
+.generated-application-card{border-color:#bfe9e4;background:#f6fcfb}
+.generated-application-card .portal-doc-actions{margin-top:18px}
 
 * {
   box-sizing: border-box;

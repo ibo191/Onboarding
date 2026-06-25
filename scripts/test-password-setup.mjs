@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import applicationsHandler from "../api/applications.js";
+import dailySummaryHandler from "../api/daily-student-summary.js";
 import notifyHandler from "../api/notify-student.js";
 import passwordHandler from "../api/set-student-password.js";
 import loginHandler from "../api/student-login.js";
@@ -7,6 +8,7 @@ import { sha256, supabaseRequest, verifyPassword } from "../api/_supabase.js";
 process.env.SUPABASE_URL = '"https://example.supabase.co/rest/v1/"';
 process.env.SUPABASE_SERVICE_ROLE_KEY = "sb_secret_test";
 process.env.PORTAL_BASE_URL = "https://portal.example.com";
+process.env.ALLOW_DAILY_SUMMARY_FORCE = "true";
 delete process.env.SMTP_HOST;
 process.env.RESEND_API_KEY = "test-key";
 let releaseMail;
@@ -33,6 +35,9 @@ globalThis.fetch = async (url, options = {}) => {
   if (requestUrl.includes("applications?select=source,data&id=eq.order-123&order=updated_at.desc&limit=5")) {
     return Response.json([...rows.values()].filter((row) => row.id === "order-123").map((row) => ({ source: row.source, data: structuredClone(row.data) })));
   }
+  if (requestUrl.includes("applications?select=id,source,status,data,updated_at&source=eq.onboarding&order=updated_at.desc")) {
+    return Response.json([...rows.values()].filter((row) => row.source === "onboarding").map((row) => structuredClone(row)));
+  }
   if (requestUrl.includes("applications?select=data&id=eq.order-123&source=eq.web")) {
     const row = rows.get("order-123:web");
     return Response.json(row ? [{ data: structuredClone(row.data) }] : []);
@@ -53,7 +58,7 @@ globalThis.fetch = async (url, options = {}) => {
   throw new Error("Unexpected fetch: " + requestUrl);
 };
 function createRes() { return { statusCode: 0, headers: {}, body: null, setHeader(key, value) { this.headers[key] = value; }, status(code) { this.statusCode = code; return this; }, json(payload) { this.body = payload; return this; } }; }
-const application = { id: "order-123", status: "new", courseTitle: "Skupina B", student: { firstName: "Jan", lastName: "Novak", email: "Jan.Novak@Example.cz", phone: "+420123456789" }, credentials: { email: "Jan.Novak@Example.cz", passwordSet: false }, payment: { amount: 19900 } };
+const application = { id: "order-123", status: "new", courseTitle: "Skupina B", student: { firstName: "Jan", lastName: "Novak", email: "Jan.Novak@Example.cz", phone: "+420123456789", birthDate: "2010-01-01" }, credentials: { email: "Jan.Novak@Example.cz", passwordSet: false }, payment: { amount: 19900 } };
 const orderRes = createRes();
 const orderRequest = applicationsHandler({ method: "POST", headers: { host: "www.example.com" }, body: { source: "web", application, sendEmails: true } }, orderRes);
 await new Promise((resolve) => setImmediate(resolve));
@@ -96,6 +101,7 @@ assert.equal(passwordRes.statusCode, 200);
 assert.equal(passwordRes.body.ok, true);
 const portalRow = rows.get("order-123:onboarding");
 assert.ok(portalRow);
+assert.equal(portalRow.data.applicant.targetGroups, "B-L17");
 assert.equal(portalRow.data.credentials.passwordSet, true);
 assert.equal(portalRow.data.credentials.password, "");
 assert.equal(verifyPassword("BezpecneHeslo123", portalRow.data.credentials), true);
@@ -115,6 +121,18 @@ assert.equal(notifyRes.body.ok, true);
 assert.equal(notifyRes.body.to, "objednavky@autoskolabubu.cz");
 assert.equal(sentEmails.at(-1).to[0], "objednavky@autoskolabubu.cz");
 assert.match(sentEmails.at(-1).subject, /Nová zpráva od studenta/);
+const completedRow = rows.get("order-123:onboarding");
+completedRow.data.status = "student_completed";
+completedRow.status = "student_completed";
+completedRow.data.review = { ...(completedRow.data.review || {}), completedAt: new Date().toISOString(), completedSummarySentAt: "", completedSummarySentDate: "" };
+rows.set("order-123:onboarding", completedRow);
+const dailyRes = createRes();
+await dailySummaryHandler({ method: "POST", headers: { host: "www.example.com" }, query: { force: "1" }, body: { force: true } }, dailyRes);
+assert.equal(dailyRes.statusCode, 200);
+assert.equal(dailyRes.body.ok, true);
+assert.equal(dailyRes.body.count, 1);
+assert.match(sentEmails.at(-1).subject, /Denní přehled doplněných údajů/);
+assert.ok(rows.get("order-123:onboarding").data.review.completedSummarySentAt);
 const deleteRes = createRes();
 await applicationsHandler({ method: "POST", headers: { host: "www.example.com" }, body: { deleteApplicationId: "order-123" } }, deleteRes);
 assert.equal(deleteRes.statusCode, 200);

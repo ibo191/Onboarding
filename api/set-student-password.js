@@ -3,11 +3,31 @@ import { hashPassword, json, readBody, sha256, supabaseRequest } from "./_supaba
 
 const DEFAULT_BANK_ACCOUNT = "2702696953/2010";
 
+function ageFromBirthDate(birthDate) {
+  if (!birthDate) return null;
+  const birth = new Date(`${birthDate}T00:00:00`);
+  if (Number.isNaN(birth.getTime())) return null;
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDelta = today.getMonth() - birth.getMonth();
+  if (monthDelta < 0 || (monthDelta === 0 && today.getDate() < birth.getDate())) age -= 1;
+  return age;
+}
+
+function normalizeTargetGroups(targetGroups = "", birthDate = "") {
+  const value = String(targetGroups || "").trim();
+  const age = ageFromBirthDate(birthDate);
+  if (age === null || age > 17) return value;
+  if (!value || /\bB\b/i.test(value) || /skupina\s*b/i.test(value)) return "B-L17";
+  return value;
+}
+
 function portalApplicationFromWeb(webApplication = {}) {
   if (webApplication.applicant) return webApplication;
   const student = webApplication.student || {};
   const credentials = webApplication.credentials || {};
   const id = webApplication.id || "";
+  const targetGroups = normalizeTargetGroups(webApplication.courseGroup || student.targetGroups || webApplication.courseId || "", student.birthDate || "");
   return {
     id,
     createdAt: webApplication.createdAt || new Date().toISOString(),
@@ -17,7 +37,7 @@ function portalApplicationFromWeb(webApplication = {}) {
     price: Number(webApplication.payment?.amount || webApplication.totalPrice || webApplication.price || 0),
     selectedProducts: webApplication.selectedProducts || [],
     applicant: {
-      targetGroups: webApplication.courseGroup || student.targetGroups || webApplication.courseId || "",
+      targetGroups,
       hasLicense: student.hasLicense || (student.heldGroups ? "yes" : "no"),
       heldGroups: student.heldGroups || "",
       licenseNumber: student.licenseNumber || "",
