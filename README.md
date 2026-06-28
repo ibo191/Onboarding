@@ -52,6 +52,7 @@ Projekt je pripravený na postupné napojenie databázy Supabase bez zmeny stack
    - `MAIL_FROM` napr. `Autoškola BuBu <info@autoskolabubu.cz>`
    - `ORDERS_EMAIL` napr. `objednavky@autoskolabubu.cz`
    - `RESEND_API_KEY` voliteľný fallback, ak SMTP nie je nastavené
+   - `GOOGLE_MAPS_EMBED_API_KEY` pre Google mapy na pobočkových landing pages; ak nie je nastavený, použije sa `GOOGLE_PLACES_API_KEY`, ale tento kľúč musí mať povolenú aj Maps Embed API
 4. Spustite redeploy vo Verceli.
 
 Po nastavení sa objednávky z webu, študentský portál a admin portál ukladajú do tabuľky `applications`. Nastavenie hesla používa jednorazový setup token platný 48 hodín; v databáze sa uchováva iba jeho SHA-256 hash a po nastavení hesla sa token zneplatní. Objednávky sa zároveň posielajú do objednávkovej schránky, študentovi chodí potvrdenie a admin správy v chate aj schvaľovanie odosielajú e-mailové upozornenia študentovi. Cookie rozhodnutia sa ukladajú do `cookie_consents` s hashovanou IP adresou.
