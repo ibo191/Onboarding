@@ -249,14 +249,15 @@
 
 .local-package-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
+  align-items: stretch;
 }
 
 .local-package-card {
   position: relative;
   display: flex;
-  min-height: 430px;
+  min-height: 520px;
   flex-direction: column;
   padding: 34px 30px 28px;
   border: 1px solid rgba(203, 218, 232, 0.9);
@@ -398,6 +399,32 @@
   line-height: 1.55;
 }
 
+.local-roadmap {
+  margin-top: 18px;
+  padding: 24px;
+  border: 1px solid rgba(203, 218, 232, 0.9);
+  border-radius: 10px;
+  background: linear-gradient(180deg, #fff, #f7fbfb);
+  box-shadow: 0 18px 48px rgba(18, 35, 55, 0.07);
+}
+
+.local-roadmap .roadmap-line {
+  margin: 0 5%;
+}
+
+.local-roadmap .roadmap-points button {
+  min-height: 82px;
+  font-size: 13px;
+}
+
+.local-roadmap .roadmap-detail {
+  min-height: 190px;
+}
+
+.local-roadmap .roadmap-detail-card {
+  box-shadow: none;
+}
+
 .local-why-band {
   background: #ecfaf8;
 }
@@ -445,16 +472,40 @@
   align-items: start;
 }
 
-.local-final-cta {
-  border-radius: 0;
-  background: linear-gradient(110deg, #078b7b, #4ab9ab);
-  color: #fff;
+.local-final-cta-section {
+  background: linear-gradient(135deg, #f6fbfb 0%, #fff 52%, #eef5ff 100%);
 }
 
-.local-final-cta .cta-panel {
-  border: 0;
-  background: transparent;
-  box-shadow: none;
+.local-final-cta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: center;
+  padding: clamp(24px, 4vw, 38px);
+  border: 1px solid rgba(203, 218, 232, 0.9);
+  border-radius: 10px;
+  background: #fff;
+  color: #07111f;
+  box-shadow: 0 22px 58px rgba(18, 35, 55, 0.1);
+}
+
+.local-final-cta h2 {
+  max-width: 760px;
+}
+
+.local-final-cta p:not(.eyebrow) {
+  max-width: 720px;
+  color: #5f6d84;
+  font-weight: 650;
+}
+
+.local-final-cta .cta-actions {
+  justify-content: flex-end;
+}
+
+.local-final-cta .btn.light {
+  background: #e8f6f4;
+  color: #1f3772;
 }
 
 @media (max-width: 1080px) {
@@ -474,12 +525,17 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .local-package-grid {
+  .local-package-grid,
+  .local-final-cta {
     grid-template-columns: 1fr;
   }
 
   .local-steps {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .local-final-cta .cta-actions {
+    justify-content: flex-start;
   }
 }
 
@@ -549,5 +605,17 @@
   .local-steps span {
     left: 0;
     top: 0;
+  }
+
+  .local-roadmap {
+    padding: 16px;
+  }
+
+  .local-final-cta .cta-actions {
+    display: grid;
+  }
+
+  .local-final-cta .btn {
+    width: 100%;
   }
 }
