@@ -33,6 +33,35 @@ html.route-transition .main{animation:pageFade .24s ease both}@keyframes pageFad
 
 /* Mobile conversion polish */
 html,body{max-width:100%;overflow-x:hidden}.main,.site-shell{min-width:0}.btn{min-height:46px}.mobile-menu-toggle{touch-action:manipulation}
+
+/* Centered public section headings */
+.home-process-head,
+.section-head.centered {
+  display: grid;
+  justify-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.home-process-head > div,
+.section-head.centered > div {
+  display: grid;
+  justify-items: center;
+  width: min(980px, 100%);
+  margin-inline: auto;
+}
+
+.home-process-head h2,
+.section-head.centered h2,
+.home-process-head p,
+.section-head.centered p {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.home-process-head .btn {
+  justify-self: center;
+}
 @media(max-width:760px){
   body{font-size:15px}
   h1{font-size:clamp(34px,10vw,42px)!important;line-height:1.02}
