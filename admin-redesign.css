@@ -553,10 +553,16 @@
 .admin-course-price-list span {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 10px;
   padding: 4px 8px;
   border-radius: 8px;
   background: #eef8f6;
+}
+
+.admin-course-price-list em {
+  color: #44566b;
+  font-style: normal;
 }
 
 .admin-course-price-list strong {
@@ -625,6 +631,28 @@
 
 .admin-course-branch-prices {
   align-items: end;
+}
+
+.admin-package-price-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-package-price-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.85fr) minmax(140px, 1fr) minmax(140px, 1fr);
+  gap: 12px;
+  align-items: end;
+  padding: 12px;
+  border: 1px solid #d7e2ea;
+  border-radius: 12px;
+  background: #f7fbfb;
+}
+
+.admin-package-price-row > strong {
+  align-self: center;
+  color: #0f2c55;
+  font-size: 15px;
 }
 
 .admin-editor-actions {
