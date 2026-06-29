@@ -494,7 +494,7 @@
 
 .admin-course-table .admin-table-head,
 .admin-course-table .admin-course-row {
-  grid-template-columns: minmax(310px, 1.35fr) minmax(130px, 0.45fr) minmax(220px, 0.78fr) minmax(90px, 0.32fr) minmax(100px, 0.28fr);
+  grid-template-columns: minmax(310px, 1.25fr) minmax(190px, 0.72fr) minmax(200px, 0.68fr) minmax(90px, 0.32fr) minmax(100px, 0.28fr);
 }
 
 .admin-course-table .admin-course-row {
@@ -539,6 +539,32 @@
   display: block;
   margin-bottom: 4px;
   font-size: 18px;
+}
+
+.admin-course-price-list {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+  color: #44566b;
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.admin-course-price-list span {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: #eef8f6;
+}
+
+.admin-course-price-list strong {
+  display: inline;
+  margin: 0;
+  color: #008a7a;
+  font-size: inherit;
+  white-space: nowrap;
 }
 
 .admin-course-branches-cell {
@@ -595,6 +621,10 @@
 
 .admin-course-checkboxes {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-course-branch-prices {
+  align-items: end;
 }
 
 .admin-editor-actions {
