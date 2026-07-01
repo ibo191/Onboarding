@@ -14,7 +14,7 @@ function siteUrl(path = "") {
 }
 
 function adminPortalUrl(req) {
-  return `${portalBaseUrl(req)}/onboarding/index.html#admin`;
+  return `${portalBaseUrl(req)}/admin`;
 }
 
 function portalUrl(req) {

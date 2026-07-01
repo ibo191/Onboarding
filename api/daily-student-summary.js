@@ -9,6 +9,10 @@ function ordersEmail() {
   return env("ORDERS_EMAIL", env("ADMIN_EMAIL", "objednavky@autoskolabubu.cz"));
 }
 
+function adminPortalUrl(baseUrl) {
+  return `${baseUrl}/admin`;
+}
+
 function pragueDateParts(date = new Date()) {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Europe/Prague",
@@ -69,7 +73,7 @@ function summaryRows(applications) {
     <table role="presentation" style="width:100%;border-collapse:separate;border-spacing:0;margin:18px 0;border:1px solid #d7e2ea;border-radius:14px;overflow:hidden">
       ${applications.map((application, index) => {
         const applicant = applicantFromApplication(application);
-        const portalUrl = `${application.portalBaseUrl || ""}/onboarding/index.html#admin`;
+        const portalUrl = adminPortalUrl(application.portalBaseUrl || "");
         return `
           <tr style="background:${index % 2 ? "#ffffff" : "#f8fbfc"}">
             <td style="padding:12px 14px;border-bottom:1px solid #e6eef2;color:#10131a;font-weight:900">${escapeHtml(applicantName(application))}</td>
@@ -112,7 +116,7 @@ export default async function handler(req, res) {
     const html = mailLayout({
       title: "Denní přehled doplněných údajů",
       intro: `Studenti níže odeslali údaje ke kontrole. Přehled je za den ${escapeHtml(prague.date)} a posílá se jednou denně.`,
-      buttonUrl: `${portalBase}/onboarding/index.html#admin`,
+      buttonUrl: adminPortalUrl(portalBase),
       buttonText: "Otevřít admin portál",
       children: summaryRows(applications),
       footer: "Automatický ranní přehled ze studentského portálu Autoškoly BuBu.",
