@@ -544,28 +544,48 @@
 
 @media (max-width: 720px) {
   .local-hero {
-    padding-top: 30px;
+    padding: 26px 14px 18px;
   }
 
   .local-hero-grid {
-    gap: 24px;
+    gap: 18px;
   }
 
   .local-hero-copy h1 {
-    font-size: clamp(36px, 13vw, 52px);
+    margin: 10px 0 12px;
+    font-size: clamp(34px, 11vw, 44px);
+    line-height: 1.06;
+  }
+
+  .local-hero-copy .lead {
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .local-hero-copy .muted {
+    font-size: 14px;
+    line-height: 1.62;
   }
 
   .local-hero .hero-actions {
+    display: grid;
     align-items: stretch;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .local-hero .hero-actions .btn {
+    width: 100%;
+    min-height: 50px;
   }
 
   .local-hero-media {
-    min-height: 310px;
-    border-radius: 0 0 0 72px;
+    min-height: 220px;
+    border-radius: 0 0 0 46px;
   }
 
   .local-hero-media img {
-    min-height: 310px;
+    min-height: 220px;
   }
 
   .local-floating-card {
@@ -573,22 +593,57 @@
     right: auto;
     bottom: auto;
     width: auto;
-    margin: -44px 14px 14px;
+    margin: -30px 10px 10px;
+    gap: 8px;
+    padding: 16px;
   }
 
   .local-trust-strip,
   .local-fit-grid,
   .local-why-grid,
-  .local-steps {
+  .local-steps,
+  .local-review-grid {
     grid-template-columns: 1fr;
   }
 
   .local-trust-strip {
-    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .local-trust-strip span {
+    gap: 7px;
+    font-size: 12px;
+  }
+
+  .local-trust-strip span::before {
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
   }
 
   .local-fit-card {
     min-height: auto;
+    padding: 18px;
+  }
+
+  .local-package-card {
+    min-height: auto;
+    padding: 20px;
+  }
+
+  .local-package-card p {
+    min-height: 0;
+  }
+
+  .local-package-card strong {
+    font-size: 30px;
+  }
+
+  .local-map-card,
+  .google-map-card,
+  .google-map-card iframe {
+    min-height: 240px;
   }
 
   .local-steps article {
@@ -611,7 +666,7 @@
   }
 
   .local-roadmap {
-    padding: 16px;
+    padding: 14px;
   }
 
   .local-final-cta .cta-actions {
@@ -620,5 +675,30 @@
 
   .local-final-cta .btn {
     width: 100%;
+  }
+
+  .local-review-faq-grid,
+  .google-reviews-widget,
+  .google-widget-head,
+  .google-review-track,
+  .google-widget-foot {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .local-review-faq-grid > * {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .local-trust-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .local-hero-media,
+  .local-hero-media img {
+    min-height: 200px;
   }
 }
