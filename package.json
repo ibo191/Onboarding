@@ -1,6 +1,10 @@
 {
   "private": true,
   "type": "module",
+  "scripts": {
+    "audit:seo": "node scripts/audit-seo-local.mjs",
+    "test:password": "node scripts/test-password-setup.mjs"
+  },
   "dependencies": {
     "nodemailer": "^6.9.16"
   }
