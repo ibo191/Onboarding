@@ -153,3 +153,47 @@
   .home-trust-icons{grid-template-columns:1fr!important}
   .home-hero-media,.home-hero-media img{min-height:190px!important}
 }
+
+/* Final mobile homepage simplification */
+@media(max-width:760px){
+  .home-hero{padding-bottom:14px!important}
+  .home-trust-icons,
+  .home-google-card,
+  .trust-bar-section,
+  .home-pricing-cta-section{display:none!important}
+  .popular-courses-section{padding-top:32px!important}
+  .popular-head{gap:8px;margin-bottom:14px}
+  .popular-head .muted,.popular-all-btn{display:none!important}
+  .popular-course-layout{display:grid!important;gap:12px!important}
+  .popular-auto-panel,.popular-moto-panel{padding:14px!important;border-radius:12px!important}
+  .popular-choice-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;margin-bottom:14px!important}
+  .popular-choice-card{min-height:116px!important;padding:10px!important;border-radius:10px!important}
+  .popular-choice-icon{width:36px!important;height:36px!important}
+  .popular-choice-card small{display:none!important}
+  .popular-choice-card strong{font-size:14px!important}
+  .popular-choice-card em{font-size:11px!important;line-height:1.25!important}
+  .popular-package-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .popular-package-card{min-height:0!important;padding:12px!important;border-radius:10px!important}
+  .popular-recommended{position:static!important;width:max-content!important;min-height:24px!important;margin:0 0 8px!important;padding:0 8px!important;font-size:10px!important}
+  .popular-package-head{display:grid!important;grid-template-columns:34px minmax(0,1fr)!important;gap:8px!important;margin-bottom:8px!important}
+  .popular-package-icon{width:34px!important;height:34px!important}
+  .popular-package-head h5{font-size:16px!important;margin-bottom:3px!important}
+  .popular-package-head p{font-size:12px!important;line-height:1.35!important}
+  .popular-package-card ul{gap:6px!important;margin:8px 0 12px!important}
+  .popular-package-card li{padding-left:18px!important;font-size:12px!important;line-height:1.32!important}
+  .popular-package-card li:nth-child(n+3){display:none!important}
+  .popular-package-bottom{display:grid!important;gap:8px!important;padding-top:10px!important}
+  .popular-package-bottom strong{font-size:20px!important}
+  .popular-package-bottom .btn{width:100%!important;min-height:40px!important;padding:0 8px!important;font-size:12px!important}
+  .popular-trust-row{display:none!important}
+  .popular-moto-panel{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .popular-moto-panel .popular-panel-head,.popular-moto-all{grid-column:1/-1!important}
+  .popular-moto-card{grid-template-columns:38px minmax(0,1fr)!important;min-height:86px!important;padding:10px!important;border-radius:10px!important}
+  .popular-moto-card small,.popular-moto-card mark{display:none!important}
+  .popular-moto-card em{font-size:11px!important}
+  .home-location-grid{display:grid!important;grid-template-columns:repeat(3,minmax(78%,1fr))!important;gap:10px!important;overflow-x:auto!important;scroll-snap-type:x proximity!important;padding:2px 2px 12px!important;margin-inline:-2px!important}
+  .home-branch-card{scroll-snap-align:start!important;min-height:188px!important;padding:14px!important;border-radius:12px!important}
+  .home-branch-card h3{font-size:19px!important}
+  .home-branch-card p{font-size:13px!important;line-height:1.42!important}
+  .home-branch-card .btn{width:100%!important;min-height:42px!important}
+}

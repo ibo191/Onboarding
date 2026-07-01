@@ -294,3 +294,84 @@ html,body{max-width:100%;overflow-x:hidden}.main,.site-shell{min-width:0}.btn{mi
 @media(max-width:340px){
   .cookie-actions{grid-template-columns:1fr}
 }
+
+/* Focused mobile landing and order flow cleanup */
+.home-location-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.home-branch-card{display:grid;gap:12px;min-height:220px;padding:20px}
+.home-branch-card h3{margin:0;font-size:24px}
+.home-branch-card p{margin:0}
+.home-branch-card .btn{align-self:end;width:max-content}
+.package-value-note{display:block;margin-top:8px;padding:8px 10px;border-radius:8px;background:#e8f6f4;color:#087b74;font-style:normal;font-size:12px;font-weight:900;line-height:1.35}
+
+@media(max-width:760px){
+  .home-hero{padding-bottom:14px!important}
+  .home-trust-icons,
+  .home-google-card,
+  .trust-bar-section,
+  .home-pricing-cta-section{display:none!important}
+  .popular-courses-section{padding-top:32px!important}
+  .popular-head{gap:8px;margin-bottom:14px}
+  .popular-head .muted{display:none}
+  .popular-all-btn{display:none}
+  .popular-course-layout{display:grid;gap:12px}
+  .popular-auto-panel,
+  .popular-moto-panel{padding:14px!important;border-radius:12px;background:#fff;box-shadow:0 10px 24px rgba(17,24,39,.06)}
+  .popular-panel-head{margin-bottom:12px;gap:10px}
+  .popular-panel-head h3{font-size:20px!important}
+  .popular-panel-head p{font-size:13px;line-height:1.35}
+  .popular-main-icon{width:44px!important;height:44px!important}
+  .popular-choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px;margin-bottom:14px}
+  .popular-choice-card{min-height:116px;padding:10px;border-radius:10px}
+  .popular-choice-icon{width:36px!important;height:36px!important}
+  .popular-choice-card strong{font-size:14px}
+  .popular-choice-card small{display:none}
+  .popular-choice-card em{font-size:11px;line-height:1.25}
+  .popular-auto-panel h4{margin:0 0 10px;font-size:15px}
+  .popular-package-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}
+  .popular-package-card{min-height:0!important;padding:12px!important;border-radius:10px}
+  .popular-recommended{position:static;width:max-content;margin:0 0 8px;font-size:10px;min-height:24px;padding:0 8px}
+  .popular-package-head{display:grid;grid-template-columns:34px minmax(0,1fr);gap:8px;margin-bottom:8px}
+  .popular-package-icon{width:34px!important;height:34px!important}
+  .popular-package-head h5{font-size:16px;margin-bottom:3px}
+  .popular-package-head p{font-size:12px;line-height:1.35}
+  .popular-package-card ul{gap:6px;margin:8px 0 12px}
+  .popular-package-card li{padding-left:18px;font-size:12px;line-height:1.32}
+  .popular-package-bottom{gap:8px;padding-top:10px}
+  .popular-package-bottom span{font-size:11px}
+  .popular-package-bottom strong{font-size:20px!important}
+  .popular-package-bottom .btn{min-height:40px;font-size:12px;padding:0 8px}
+  .popular-trust-row{display:none!important}
+  .popular-moto-panel{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}
+  .popular-moto-panel .popular-panel-head{grid-column:1/-1}
+  .popular-moto-card{grid-template-columns:38px minmax(0,1fr)!important;min-height:86px;padding:10px;border-radius:10px}
+  .popular-moto-card small{display:none}
+  .popular-moto-card em{font-size:11px}
+  .popular-moto-card mark{display:none}
+  .popular-moto-all{grid-column:1/-1;min-height:42px}
+  .home-location-grid{display:grid;grid-template-columns:repeat(3,minmax(78%,1fr));gap:10px;overflow-x:auto;scroll-snap-type:x proximity;padding:2px 2px 12px;margin-inline:-2px}
+  .home-branch-card{scroll-snap-align:start;min-height:188px;padding:14px;border-radius:12px}
+  .home-branch-card h3{font-size:19px}
+  .home-branch-card p{font-size:13px;line-height:1.42}
+  .home-branch-card .btn{width:100%;min-height:42px}
+  .order-form-redesign{grid-template-columns:1fr!important}
+  .order-side-column{display:none!important}
+  .order-main-column{padding:18px 14px 20px!important}
+  .order-main-column h2{font-size:28px!important}
+  .order-reassurance{font-size:13px;line-height:1.4}
+  .order-stepper{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px}
+  .order-stepper button{display:grid;justify-items:center;align-content:center;gap:4px;min-height:54px;padding:6px;font-size:11px;text-align:center}
+  .order-stepper button span{width:22px;height:22px}
+  .order-package-cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .package-option{grid-template-columns:16px minmax(0,1fr)!important;gap:8px;padding:11px}
+  .package-option small{font-size:12px;line-height:1.32}
+  .package-value-note{font-size:11px;padding:7px;margin-top:6px}
+  .package-price{grid-column:2!important;font-size:18px!important;white-space:normal}
+  .order-upsell{padding:13px}
+  .upsell-grid{grid-template-columns:1fr!important}
+  .order-final-summary{display:none!important}
+  .order-final-panel{gap:14px}
+  .order-final-panel h3{margin-bottom:2px}
+  .order-form .legal-check{padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .order-bottom-row{position:sticky;bottom:0;z-index:5;margin:0 -14px -20px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(255,255,255,.9),#fff);border-top:1px solid var(--line)}
+  .order-bottom-row .btn{min-height:50px}
+}
