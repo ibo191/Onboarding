@@ -8,13 +8,13 @@
   </head>
   <body>
     <script>
-      if (window.self === window.top && window.location.hash === "#admin") {
-        window.location.replace("/admin");
+      if (window.location.hash === "#admin") {
+        window.top.location.replace("/admin");
       }
     </script>
     <div id="app"></div>
     <script defer src="/_vercel/insights/script.js"></script>
     <script src="../supabase-client.js?v=7"></script>
-    <script src="./app.js?v=57"></script>
+    <script src="./app.js?v=58"></script>
   </body>
 </html>
