@@ -1865,6 +1865,10 @@ body:has(.portal-shell){
   background:#e4ecef;
   color:#4b5a60;
 }
+.doc-status.ok{
+  background:#e4f8ee;
+  color:#127344;
+}
 .portal-doc-text{
   font-size:16px;
   line-height:1.55;
@@ -1949,6 +1953,101 @@ iframe.document-thumb{
   font-size:48px;
   transform:rotate(4deg);
 }
+.signature-action-panel{
+  display:grid;
+  gap:14px;
+  margin:16px 0;
+  padding:16px;
+  border:1px solid #c9d8dc;
+  border-radius:12px;
+  background:#f6fbfc;
+}
+.signature-action-panel strong{
+  color:var(--portal-ink);
+}
+.signature-action-panel p{
+  margin:4px 0 0;
+  color:var(--portal-muted);
+  font-size:14px;
+}
+.signature-action-grid{
+  display:grid;
+  grid-template-columns:minmax(180px,auto) minmax(0,1fr);
+  gap:10px 12px;
+  align-items:center;
+}
+.signature-action-grid button{
+  justify-content:center;
+}
+.signature-ok,.signature-missing{
+  min-height:36px;
+  display:flex;
+  align-items:center;
+  padding:7px 10px;
+  border-radius:8px;
+  font-size:13px;
+  font-weight:800;
+}
+.signature-ok{
+  background:#e4f8ee;
+  color:#127344;
+}
+.signature-missing{
+  background:#fff2d8;
+  color:#8a5200;
+}
+.signature-modal{
+  width:min(720px,calc(100vw - 28px));
+}
+.signature-pad-wrap{
+  position:relative;
+  min-height:260px;
+  margin:18px 0;
+  border:2px dashed #9bbbc1;
+  border-radius:14px;
+  background:#fff;
+  overflow:hidden;
+  touch-action:none;
+}
+.signature-pad{
+  width:100%;
+  height:260px;
+  display:block;
+  cursor:crosshair;
+  touch-action:none;
+}
+.signature-pad-wrap span{
+  position:absolute;
+  left:18px;
+  bottom:14px;
+  color:#8aa0a6;
+  font-size:13px;
+  font-weight:800;
+  pointer-events:none;
+}
+.signature-saved-note{
+  margin-top:-8px;
+  color:var(--portal-muted);
+  font-size:13px;
+}
+.official-signature{
+  position:absolute;
+  object-fit:contain;
+  mix-blend-mode:multiply;
+  pointer-events:none;
+}
+.official-applicant-signature{
+  left:55.5%;
+  top:89.6%;
+  width:30%;
+  height:4.6%;
+}
+.official-guardian-signature{
+  left:57%;
+  top:62.2%;
+  width:28%;
+  height:4.2%;
+}
 .upload-inline{
   cursor:pointer;
 }
@@ -2007,4 +2106,6 @@ iframe.document-thumb{
   .portal-info-card{grid-template-columns:1fr}
   .portal-application-sign{grid-template-columns:1fr}
   .signature-illustration{justify-self:start;width:120px;height:120px}
+  .signature-action-grid{grid-template-columns:1fr}
+  .signature-pad-wrap,.signature-pad{height:220px;min-height:220px}
 }
