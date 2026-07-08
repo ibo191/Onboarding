@@ -1,7 +1,4 @@
 User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /student
-Disallow: /onboarding
+Disallow: /
 
 Sitemap: https://www.autoskolabubu.cz/sitemap.xml
