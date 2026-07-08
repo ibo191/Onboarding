@@ -188,6 +188,98 @@ button:hover {
   padding: 0 13px;
   font-weight: 800;
 }
+.login-shell{
+  min-height:100vh;
+  background:radial-gradient(circle at 82% 4%,rgba(74,185,171,.16),transparent 34%),linear-gradient(180deg,#eef8f7 0%,#f7fbff 100%);
+}
+.login-topbar{
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(14px);
+}
+.login-brand{
+  color:var(--ink);
+}
+.login-brand strong{
+  display:block;
+  font-size:17px;
+  line-height:1.1;
+}
+.login-brand small{
+  display:block;
+  margin-top:2px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+}
+.login-nav a{
+  min-height:38px;
+  display:inline-flex;
+  align-items:center;
+  border-radius:8px;
+  padding:0 13px;
+  color:#26343b;
+  font-weight:800;
+}
+.login-nav a:hover{
+  background:#e8edf2;
+}
+.login-nav .portal-back{
+  background:var(--brand);
+  color:#fff;
+}
+.login-main{
+  width:min(1220px,calc(100% - 32px));
+  padding-top:42px;
+}
+.login-hero{
+  min-height:calc(100vh - 160px);
+  align-items:center;
+}
+.login-hero-text{
+  display:grid;
+  align-content:center;
+  min-height:420px;
+  padding:clamp(24px,5vw,64px) 0;
+}
+.login-eyebrow{
+  width:max-content;
+  max-width:100%;
+  margin:0 0 14px;
+  padding:8px 14px;
+  border:1px solid rgba(74,185,171,.55);
+  border-radius:999px;
+  color:#108578;
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+}
+.login-quick-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:26px;
+}
+.login-quick-links a{
+  min-height:40px;
+  display:inline-flex;
+  align-items:center;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:0 14px;
+  background:#fff;
+  color:var(--brand-strong);
+  font-weight:900;
+  box-shadow:0 10px 24px rgba(23,33,43,.06);
+}
+.login-card{
+  align-self:center;
+  border-top:4px solid var(--brand);
+  box-shadow:0 24px 60px rgba(23,33,43,.12);
+}
+.login-actions{
+  align-items:center;
+}
 
 .main {
   width: min(1180px, calc(100% - 32px));
@@ -2078,6 +2170,37 @@ iframe.document-thumb{
   .portal-document-grid{grid-template-columns:1fr}
 }
 @media(max-width:760px){
+  .login-topbar{
+    position:static;
+    display:grid;
+    gap:12px;
+  }
+  .login-nav{
+    justify-content:flex-start;
+  }
+  .login-nav a:not(.portal-back){
+    display:none;
+  }
+  .login-main{
+    width:min(100% - 24px,1220px);
+    padding-top:18px;
+  }
+  .login-hero{
+    min-height:auto;
+  }
+  .login-hero-text{
+    min-height:0;
+    padding:18px 0 6px;
+  }
+  .login-hero-text h1{
+    font-size:38px;
+  }
+  .login-card{
+    align-self:start;
+  }
+  .login-actions{
+    display:grid;
+  }
   .portal-app{display:block}
   .portal-sidebar{
     position:relative;
