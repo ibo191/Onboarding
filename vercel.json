@@ -74,7 +74,7 @@
     },
     {
       "path": "/api/onboarding-reminders",
-      "schedule": "0 * * * *"
+      "schedule": "0 5 * * *"
     }
   ]
 }
