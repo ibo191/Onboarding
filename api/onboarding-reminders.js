@@ -113,20 +113,20 @@ function rowFromApplication(application, row = {}) {
 }
 
 function courseTitle(application = {}) {
-  return application.courseTitle || application.courseName || application.title || application.courseId || "kurz AutoSkoly BuBu";
+  return application.courseTitle || application.courseName || application.title || application.courseId || "kurz Autoškoly BuBu";
 }
 
 function reminderHtml(application, setupUrl) {
   const name = studentName(application);
   return mailLayout({
-    title: "Dokoncete prihlasku do kurzu",
-    intro: `Dobry den, ${escapeHtml(name)}. Pred dvema dny jste si vytvoril/a objednavku v AutoSkole BuBu, ale studentsky portal zatim neni dokonceny.`,
+    title: "Dokončete přihlášku do kurzu",
+    intro: `Dobrý den, ${escapeHtml(name)}. Před dvěma dny jste si vytvořil/a objednávku v Autoškole BuBu, ale studentský portál zatím není dokončený.`,
     buttonUrl: setupUrl,
-    buttonText: "Nastavit heslo a doplnit udaje",
+    buttonText: "Nastavit heslo a doplnit údaje",
     children: `
       <div style="margin:18px 0;padding:16px;border-radius:14px;background:#eef9f7;border:1px solid #c9eeea">
-        <p style="margin:0 0 6px;color:#168d80;font-weight:900">Co je potreba udelat</p>
-        <p style="margin:0;color:#475467">Nastavte si heslo do studentskeho portalu, doplnte osobni udaje a nahrajte zdravotni posudek. Bez toho nemuzeme prihlasku posunout ke kontrole.</p>
+        <p style="margin:0 0 6px;color:#168d80;font-weight:900">Co je potřeba udělat</p>
+        <p style="margin:0;color:#475467">Nastavte si heslo do studentského portálu, doplňte osobní údaje a nahrajte zdravotní posudek. Bez toho nemůžeme přihlášku posunout ke kontrole.</p>
       </div>
       <table role="presentation" style="width:100%;border-collapse:separate;border-spacing:0;margin:18px 0;border:1px solid #d7e2ea;border-radius:14px;overflow:hidden">
         <tr>
@@ -134,9 +134,9 @@ function reminderHtml(application, setupUrl) {
           <td style="padding:12px 14px;color:#10131a;font-weight:800;font-size:14px">${escapeHtml(courseTitle(application))}</td>
         </tr>
       </table>
-      <p style="margin:18px 0 0;color:#475467">Pokud jste uz udaje doplnil/a, tento e-mail prosim ignorujte.</p>
+      <p style="margin:18px 0 0;color:#475467">Pokud jste už údaje doplnil/a, tento e-mail prosím ignorujte.</p>
     `,
-    footer: "Automaticka pripominka ze studentskeho portalu AutoSkoly BuBu.",
+    footer: "Automatická připomínka ze studentského portálu Autoškoly BuBu.",
   });
 }
 
@@ -180,7 +180,7 @@ async function sendReminder(application, row, req, testRecipient = "") {
   const html = reminderHtml(nextApplication, setupUrl);
   const result = await sendMail({
     to: email,
-    subject: "Pripominka: dokoncete prihlasku | AutoSkola BuBu",
+    subject: "Připomínka: dokončete přihlášku | Autoškola BuBu",
     html,
     text: textFromHtml(html),
   });
@@ -215,7 +215,7 @@ export default async function handler(req, res) {
       const sample = {
         id: "TEST-ONBOARDING-REMINDER",
         status: "new",
-        courseTitle: "Ridicak skupiny B",
+        courseTitle: "Řidičák skupiny B",
         applicant: {
           firstName: "Jakub",
           lastName: "Test",
