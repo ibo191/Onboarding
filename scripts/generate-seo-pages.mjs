@@ -135,13 +135,14 @@ const locations = [
     lead: "Řidičák bez stresu v Praze 8. Trpěliví instruktoři, jasný plán výuky a výborná dostupnost metrem i MHD.",
     body: [
       "Střížkov je hlavní pobočka Autoškoly BuBu pro Prahu 8 a okolí. Hodí se pro studenty ze Střížkova, Proseku, Kobylis, Letňan, Ládví, Ďáblic i Prahy 9, kteří chtějí výcvik bez křiku a s přípravou na reálnou zkoušku.",
-      "Na pobočce řešíme skupinu B, BL17 i kondiční jízdy podle aktuální kapacity. Po online přihlášce vám vysvětlíme další postup a pomůžeme vybrat správný balíček.",
+      "Na pobočce řešíme auto, moto i přívěsy: skupinu B, BL17, motorky, B96, B+E i kondiční jízdy podle aktuální kapacity. Po online přihlášce vám vysvětlíme další postup a pomůžeme vybrat správný balíček.",
+      "Balíčky zobrazujeme přehledně vedle sebe. Základ je pro standardní průběh kurzu, Jistota je výhodnější volba s jízdami navíc před zkouškou, prioritnějším plánováním a větším klidem v přípravě.",
       "Praktické jízdy plánujeme v okolí Prahy 8 a 9: Střížkov, Prosek, Kobylisy, Letňany, Ládví, Ďáblice a navazující pražský provoz. Postupně přidáváme křižovatky, parkování, hustší provoz a trasy, které dávají smysl pro závěrečnou zkoušku i běžné řízení.",
       "Teorie pro pobočku Střížkov probíhá na adrese U Kapliček 34. Pobočka je dobře dostupná metrem C na stanici Střížkov a navazující MHD z Proseku, Kobylis, Letňan, Ládví i Ďáblic.",
       "Ceny pro Střížkov: skupina B Základ 24 900 Kč, skupina B Jistota 32 900 Kč, skupina B automat 24 900 Kč, B96 od 8 000 Kč a B+E podle aktuálního ceníku.",
       "Lokální recenze od studentů z Prahy 8 a 9 nejčastěji zmiňují klidný přístup, trpělivé instruktory, dobrou domluvu a přípravu na reálný provoz.",
     ],
-    sections: ["Kde se jezdí", "Kde probíhá teorie", "Jak se tam dostat", "Pro koho je pobočka vhodná", "Ceny pro pobočku Střížkov", "Lokální recenze", "Nejčastější otázky", "CTA na přihlášku"],
+    sections: ["Kurzy na pobočce", "Balíčky", "Ceník Střížkov", "Jak probíhá kurz", "Lokální informace", "Proč Autoškola BuBu", "Recenze", "Silná výzva k přihlášce"],
     faq: [
       ["Kde se jezdí na Střížkově?", "Jízdy plánujeme hlavně v Praze 8 a 9: Střížkov, Prosek, Kobylisy, Letňany, Ládví, Ďáblice a navazující pražský provoz."],
       ["Kde probíhá teorie?", "Teorie pro pobočku Střížkov probíhá na adrese U Kapliček 34, Praha 8 - Střížkov."],
