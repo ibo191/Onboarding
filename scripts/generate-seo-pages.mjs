@@ -136,15 +136,19 @@ const locations = [
     body: [
       "Střížkov je hlavní pobočka Autoškoly BuBu pro Prahu 8 a okolí. Hodí se pro studenty ze Střížkova, Proseku, Kobylis, Letňan, Ládví, Ďáblic i Prahy 9, kteří chtějí výcvik bez křiku a s přípravou na reálnou zkoušku.",
       "Na pobočce řešíme skupinu B, BL17 i kondiční jízdy podle aktuální kapacity. Po online přihlášce vám vysvětlíme další postup a pomůžeme vybrat správný balíček.",
+      "Praktické jízdy plánujeme v okolí Prahy 8 a 9: Střížkov, Prosek, Kobylisy, Letňany, Ládví, Ďáblice a navazující pražský provoz. Postupně přidáváme křižovatky, parkování, hustší provoz a trasy, které dávají smysl pro závěrečnou zkoušku i běžné řízení.",
+      "Teorie pro pobočku Střížkov probíhá na adrese U Kapliček 34. Pobočka je dobře dostupná metrem C na stanici Střížkov a navazující MHD z Proseku, Kobylis, Letňan, Ládví i Ďáblic.",
+      "Ceny pro Střížkov: skupina B Základ 24 900 Kč, skupina B Jistota 32 900 Kč, skupina B automat 24 900 Kč, B96 od 8 000 Kč a B+E podle aktuálního ceníku.",
+      "Lokální recenze od studentů z Prahy 8 a 9 nejčastěji zmiňují klidný přístup, trpělivé instruktory, dobrou domluvu a přípravu na reálný provoz.",
     ],
-    sections: ["Pro koho je pobočka ideální", "Kde výuka probíhá", "Kurzy na této pobočce", "Jak probíhá kurz", "Proč BuBu", "Recenze", "FAQ"],
+    sections: ["Kde se jezdí", "Kde probíhá teorie", "Jak se tam dostat", "Pro koho je pobočka vhodná", "Ceny pro pobočku Střížkov", "Lokální recenze", "Nejčastější otázky", "CTA na přihlášku"],
     faq: [
-      ["Jak dlouho trvá kurz?", "Délka kurzu závisí na vybrané skupině, kapacitě jízd a vašich časových možnostech."],
-      ["Kolik stojí řidičák?", "Aktuální ceny najdete v ceníku. U skupiny B si můžete vybrat balíček Základ nebo Jistota."],
-      ["Kde začínají jízdy?", "Jízdy domlouváme podle pobočky Praha 8 - Střížkov a aktuální organizace výcviku."],
-      ["Jak probíhá teorie?", "Teorie vysvětluje pravidla, testy a situace, které vás čekají v provozu i u zkoušky."],
-      ["Můžu se přihlásit online?", "Ano, pošlete krátkou přihlášku a další údaje doplníte ve studentském portálu."],
-      ["Co když mám z řízení strach?", "S tím počítáme. Výuka je klidná, trpělivá a bez křiku."],
+      ["Kde se jezdí na Střížkově?", "Jízdy plánujeme hlavně v Praze 8 a 9: Střížkov, Prosek, Kobylisy, Letňany, Ládví, Ďáblice a navazující pražský provoz."],
+      ["Kde probíhá teorie?", "Teorie pro pobočku Střížkov probíhá na adrese U Kapliček 34, Praha 8 - Střížkov."],
+      ["Jak se dostanu na pobočku?", "Nejjednodušší je metro C na stanici Střížkov a navazující MHD z Proseku, Kobylis, Letňan, Ládví i Ďáblic."],
+      ["Kolik stojí skupina B na Střížkově?", "Skupina B Základ stojí 24 900 Kč, balíček Jistota stojí 32 900 Kč. Přesné ceny dalších kurzů najdete v ceníku."],
+      ["Pro koho je pobočka Střížkov vhodná?", "Pro studenty z Prahy 8 a 9, nervózní začátečníky, L17 i zájemce o kondiční jízdy, kteří chtějí klidný přístup bez křiku."],
+      ["Můžu se přihlásit online?", "Ano. Vyberete kurz, pobočku, termín a balíček. Po objednávce pokračujete do studentského portálu."],
     ],
     address: "U Kapliček 34, Střížkov",
     phone: "+420 725 717 755",
@@ -566,7 +570,7 @@ function sitemapXml() {
 }
 
 function robotsTxt() {
-  return `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /student\nDisallow: /onboarding\n\nSitemap: ${baseUrl}/sitemap.xml\n`;
+  return `User-agent: *\nDisallow: /\n\nSitemap: ${baseUrl}/sitemap.xml\n`;
 }
 
 function llmsTxt() {
