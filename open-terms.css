@@ -646,3 +646,68 @@
     font-size: 17px;
   }
 }
+
+/* Homepage terms filter alignment */
+.open-terms-layout {
+  grid-template-columns: 1fr !important;
+  gap: 30px;
+  align-items: start;
+}
+
+.open-terms-intro {
+  max-width: 1180px;
+  text-align: center;
+}
+
+.open-terms-intro .muted {
+  margin-inline: auto;
+}
+
+.open-terms-control-panel {
+  width: 100%;
+  margin-top: 24px;
+  padding: 14px;
+  border: 1px solid rgba(74, 185, 171, 0.22);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 16px 42px rgba(17, 24, 39, 0.06);
+}
+
+.open-terms-filter-row {
+  grid-template-columns: 34px minmax(0, 1fr);
+}
+
+.open-terms-control-panel {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.open-terms-filters {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.open-terms-filters .filter-btn {
+  flex: 1 0 auto;
+  min-width: max-content;
+}
+
+@media (max-width: 860px) {
+  .open-terms-control-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .open-terms-intro {
+    text-align: left;
+  }
+}
+
+@media (max-width: 700px) {
+  .open-terms-intro {
+    text-align: center;
+  }
+
+  .open-terms-control-panel {
+    margin-top: 18px;
+    padding: 12px;
+  }
+}
