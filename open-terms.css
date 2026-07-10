@@ -316,3 +316,333 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Redesigned open terms widget */
+.open-terms-section {
+  background: #f7f7f7;
+  padding: clamp(54px, 7vw, 96px) clamp(14px, 4vw, 48px);
+}
+
+.open-terms-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.55fr);
+  gap: 26px 40px;
+  align-items: end;
+}
+
+.open-terms-intro h2,
+.open-terms-empty h2 {
+  margin: 0 0 14px;
+  max-width: 760px;
+  color: var(--ink);
+  font-size: clamp(40px, 5vw, 66px);
+  line-height: 1.03;
+  letter-spacing: 0;
+}
+
+.open-terms-intro .muted,
+.open-terms-empty .muted {
+  max-width: 720px;
+  color: #5d676f;
+  font-size: clamp(18px, 2vw, 23px);
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+.open-terms-control-panel {
+  display: grid;
+  gap: 16px;
+  align-self: end;
+}
+
+.open-terms-filter-row {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.open-filter-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+}
+
+.open-filter-icon img {
+  width: 28px;
+  height: 28px;
+}
+
+.open-terms-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+}
+
+.open-terms-filters .filter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 1px solid #d7dddd;
+  border-radius: 999px;
+  background: #fff;
+  color: #3f494d;
+  box-shadow: 0 5px 16px rgba(17, 24, 39, 0.04);
+  font-size: 16px;
+  font-weight: 850;
+}
+
+.open-terms-filters .filter-btn img {
+  width: 22px;
+  height: 22px;
+}
+
+.open-terms-filters .filter-btn.active {
+  border-color: var(--turquoise);
+  background: var(--turquoise);
+  color: #062b2a;
+}
+
+.open-terms-filters .filter-btn.active img {
+  filter: none;
+}
+
+.open-terms-list {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.open-term-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 310px;
+  padding: 22px;
+  border: 1px solid #cbdad8;
+  border-top: 6px solid #087b74;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 16px 44px rgba(17, 24, 39, 0.06);
+}
+
+.open-term-card.accent-blue {
+  border-top-color: var(--blue);
+}
+
+.open-term-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.open-term-date-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: var(--turquoise);
+  color: #063331;
+  font-size: 17px;
+  font-weight: 850;
+}
+
+.open-term-date-pill img {
+  width: 20px;
+  height: 20px;
+}
+
+.open-term-icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  background: #eef3f3;
+}
+
+.open-term-icon img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.open-term-icon .raster-icon-img {
+  width: 56px !important;
+  height: 56px !important;
+}
+
+.open-term-body {
+  display: grid;
+  gap: 9px;
+}
+
+.open-term-status {
+  display: inline-flex;
+  justify-self: start;
+  align-items: center;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: #dff7f3;
+  color: #087b74;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.open-term-body h3 {
+  margin: 4px 0 0;
+  color: var(--ink);
+  font-size: clamp(25px, 2.5vw, 34px);
+  line-height: 1.12;
+}
+
+.open-term-body p {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: #4f5c5f;
+  font-size: 17px;
+  font-weight: 720;
+}
+
+.open-term-body p img {
+  width: 20px;
+  height: 20px;
+}
+
+.open-term-seats {
+  color: var(--blue) !important;
+}
+
+.open-term-btn {
+  width: 100%;
+  min-height: 58px;
+  margin-top: auto;
+  border-radius: 8px;
+  background: #087b74;
+  color: #fff;
+  font-size: 17px;
+}
+
+.open-terms-empty {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 38px;
+  border: 1px dashed #bed1cf;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.open-terms-empty .open-terms-control-panel {
+  width: 100%;
+  max-width: 760px;
+  margin: 8px auto;
+}
+
+@media (max-width: 1080px) {
+  .open-terms-layout {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .open-terms-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .open-terms-section {
+    padding: 42px 0;
+  }
+
+  .open-terms-layout,
+  .open-terms-empty {
+    padding-inline: 20px;
+  }
+
+  .open-terms-intro {
+    text-align: center;
+  }
+
+  .open-terms-intro h2,
+  .open-terms-empty h2 {
+    font-size: 34px;
+  }
+
+  .open-terms-intro .muted,
+  .open-terms-empty .muted {
+    font-size: 17px;
+  }
+
+  .open-terms-control-panel {
+    gap: 14px;
+    overflow: hidden;
+  }
+
+  .open-terms-filter-row {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .open-terms-filters {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 2px 18px 8px 0;
+    scroll-snap-type: x proximity;
+  }
+
+  .open-terms-filters .filter-btn {
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding: 0 18px;
+    scroll-snap-align: start;
+  }
+
+  .open-terms-list {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .open-term-card {
+    min-height: 0;
+    padding: 18px;
+  }
+
+  .open-term-card-top {
+    display: grid;
+    grid-template-columns: 1fr 68px;
+  }
+
+  .open-term-date-pill {
+    justify-self: start;
+    font-size: 15px;
+  }
+
+  .open-term-icon {
+    width: 66px;
+    height: 66px;
+    border-radius: 8px;
+  }
+
+  .open-term-body h3 {
+    font-size: 30px;
+  }
+
+  .open-term-body p {
+    font-size: 17px;
+  }
+}
