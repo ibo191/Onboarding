@@ -1,5 +1,6 @@
 import { json, portalBaseUrl, randomToken, readBody, sha256, supabaseRequest } from "./_supabase.js";
 import { mailLayout, sendMail, textFromHtml } from "./_mail.js";
+import { verifyRecaptchaToken } from "./_recaptcha.js";
 
 function env(name, fallback = "") {
   return String(process.env[name] || fallback).trim();
@@ -296,6 +297,11 @@ export default async function handler(req, res) {
       }
       if (!["web", "onboarding"].includes(source) || !application?.id) return json(res, 400, { error: "Invalid application payload" });
       if (sendEmails === true && source === "web" && (application.status || "new") === "new") {
+        const recaptchaToken = application.security?.recaptchaToken || "";
+        const recaptcha = await verifyRecaptchaToken(recaptchaToken, req);
+        if (!recaptcha.ok) return json(res, 403, { error: "reCAPTCHA verification failed", detail: recaptcha.error || "Captcha check failed" });
+        application.security = { ...(application.security || {}), recaptchaVerifiedAt: new Date().toISOString(), recaptchaSkipped: Boolean(recaptcha.skipped) };
+        delete application.security.recaptchaToken;
         const applicant = applicantFromApplication(application);
         const email = String(applicant.email || application.credentials?.email || "").trim();
         const portalAccess = createPortalAccess(application, email, req);
