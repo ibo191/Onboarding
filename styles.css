@@ -48,6 +48,70 @@ html.route-transition .main{animation:pageFade .24s ease both}@keyframes pageFad
 .pricing-hero-points{align-items:stretch}.pricing-hero-points div{grid-template-columns:64px minmax(0,1fr)!important;grid-template-rows:auto auto;align-items:center;min-height:86px}.pricing-hero-points img{grid-row:1/3;width:60px!important;height:60px!important;padding:13px!important}.pricing-hero-points strong{align-self:end}.pricing-hero-points span{align-self:start}.pricing-category-tabs button img{transition:filter .18s ease}.pricing-category-tabs button.active img,.pricing-category-tabs button:hover img{filter:brightness(0) invert(1)}
 .cookie-banner{position:fixed;left:50%;bottom:18px;z-index:90;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;width:min(980px,calc(100% - 28px));padding:18px;border:1px solid rgba(74,185,171,.35);border-radius:8px;background:rgba(255,255,255,.96);box-shadow:0 22px 60px rgba(16,19,26,.18);transform:translateX(-50%);backdrop-filter:blur(14px)}.cookie-banner p{margin:0;color:#475467}.cookie-title{margin-bottom:4px!important;color:var(--ink)!important;font-weight:900}.cookie-actions{display:flex;gap:10px;align-items:center;justify-content:flex-end;white-space:nowrap}@media(max-width:720px){.cookie-banner{grid-template-columns:1fr;bottom:10px}.cookie-actions{display:grid;grid-template-columns:1fr 1fr;white-space:normal}.cookie-actions .btn{width:100%}}
 
+@media(max-width:640px){
+  .home-popular-lite-section{
+    padding-inline:16px;
+    overflow:hidden;
+  }
+
+  .home-popular-lite-head{
+    padding-inline:0;
+  }
+
+  .home-popular-lite-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:16px;
+    overflow:visible;
+    padding:0;
+    scroll-snap-type:none;
+  }
+
+  .home-popular-lite-card{
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    min-height:auto;
+    padding:28px 20px 22px;
+    scroll-snap-align:none;
+  }
+
+  .home-popular-lite-card.featured{
+    transform:none;
+  }
+
+  .home-popular-lite-card mark{
+    top:10px;
+    max-width:calc(100% - 28px);
+  }
+
+  .home-popular-lite-icon{
+    width:86px;
+    height:86px;
+    margin-top:14px;
+    margin-bottom:20px;
+  }
+
+  .home-popular-lite-icon img{
+    width:56px;
+    height:56px;
+  }
+
+  .home-popular-lite-card h3{
+    font-size:clamp(30px,9vw,40px);
+  }
+
+  .home-popular-lite-card p{
+    max-width:100%;
+    font-size:16px;
+  }
+
+  .home-popular-lite-card strong{
+    font-size:clamp(38px,12vw,54px);
+    white-space:nowrap;
+  }
+}
+
 /* Mobile conversion polish */
 html,body{max-width:100%;overflow-x:hidden}.main,.site-shell{min-width:0}.btn{min-height:46px}.mobile-menu-toggle{touch-action:manipulation}
 

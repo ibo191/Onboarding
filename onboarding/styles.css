@@ -2279,3 +2279,24 @@ iframe.document-thumb{
   .signature-action-grid{grid-template-columns:1fr}
   .signature-pad-wrap,.signature-pad{height:220px;min-height:220px}
 }
+
+/* Login page breathing room */
+.login-shell {
+  padding-inline: clamp(24px, 4vw, 72px);
+}
+
+.login-shell .login-topbar,
+.login-shell .login-main {
+  width: min(1220px, 100%);
+  margin-inline: auto;
+}
+
+@media(max-width:760px){
+  .login-shell {
+    padding-inline: 16px;
+  }
+
+  .login-main {
+    width: 100%;
+  }
+}
