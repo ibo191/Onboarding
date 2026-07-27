@@ -587,15 +587,25 @@
   pointer-events: none;
 }
 
+.modal-card:has(.admin-course-modal-shell) {
+  width: min(1720px, calc(100vw - 20px));
+  max-height: calc(100vh - 20px);
+}
+
+.modal-card:has(.admin-course-modal-shell) .modal-body {
+  padding: 24px;
+}
+
 .admin-course-modal-shell {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
-  gap: 20px;
+  grid-template-columns: minmax(780px, 1fr) minmax(500px, 0.48fr);
+  gap: 24px;
   align-items: start;
 }
 
 .admin-course-editor,
 .admin-course-side {
+  min-width: 0;
   display: grid;
   gap: 16px;
   align-content: start;
@@ -680,6 +690,30 @@
   margin-top: 0;
 }
 
+.admin-course-modal-shell .course-term-row {
+  grid-template-columns: minmax(150px, 1fr) minmax(150px, 0.9fr) auto 42px;
+}
+
+.admin-course-modal-shell .course-term-row mark {
+  white-space: nowrap;
+}
+
+.course-term-delete-btn {
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  min-height: 38px;
+  justify-self: end;
+  background: #ffe7e9;
+  color: #c43c45;
+  box-shadow: none;
+}
+
+.course-term-delete-btn:hover {
+  background: #ffdadd;
+  color: #9f2730;
+}
+
 .admin-course-modal-shell .course-term-form .btn {
   width: max-content;
   max-width: 100%;
@@ -688,6 +722,10 @@
 @media (max-width: 1100px) {
   .admin-course-modal-shell {
     grid-template-columns: 1fr;
+  }
+
+  .modal-card:has(.admin-course-modal-shell) {
+    width: min(1100px, calc(100vw - 20px));
   }
 
   .admin-course-table .admin-table-head,
@@ -737,6 +775,15 @@
 
   .admin-course-modal-shell {
     gap: 14px;
+  }
+
+  .admin-course-modal-shell .course-term-row {
+    grid-template-columns: 1fr;
+  }
+
+  .course-term-delete-btn {
+    justify-self: stretch;
+    width: 100%;
   }
 
   .admin-editor-card {
