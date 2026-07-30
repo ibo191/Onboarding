@@ -2,6 +2,15 @@
   const form = document.getElementById("fallCampaignForm");
   if (!form) return;
 
+  document.querySelectorAll(".fall-faq details").forEach((detail) => {
+    detail.addEventListener("toggle", () => {
+      if (!detail.open) return;
+      document.querySelectorAll(".fall-faq details").forEach((otherDetail) => {
+        if (otherDetail !== detail) otherDetail.open = false;
+      });
+    });
+  });
+
   const status = form.querySelector(".fall-form-status");
   const submitButton = form.querySelector('button[type="submit"]');
   let recaptchaConfigPromise = null;

@@ -659,15 +659,47 @@ a {
   margin: 0 auto;
 }
 
+.fall-faq-list {
+  display: grid;
+  gap: 12px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
 .fall-faq details {
-  margin-bottom: 10px;
+  margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 .fall-faq summary {
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
   padding: 16px 20px;
   font-weight: 900;
+  list-style: none;
+}
+
+.fall-faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.fall-faq summary::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 11px;
+  height: 11px;
+  border-right: 2px solid var(--fall-teal);
+  border-bottom: 2px solid var(--fall-teal);
+  transform: rotate(45deg);
+  transition: transform 180ms ease;
+}
+
+.fall-faq details[open] summary::after {
+  transform: rotate(-135deg);
 }
 
 .fall-faq details p {
