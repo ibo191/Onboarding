@@ -506,3 +506,40 @@ html,body{max-width:100%;overflow-x:hidden}.main,.site-shell{min-width:0}.btn{mi
   filter: none !important;
   opacity: 1;
 }
+
+.open-term-price {
+  display: grid;
+  gap: 2px;
+  min-width: 118px;
+  text-align: right;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.open-term-price span {
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.open-term-price strong {
+  color: var(--blue);
+  font-size: 20px;
+  line-height: 1.1;
+}
+
+.filter-btn.static-filter {
+  display: inline-flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.local-open-terms-section {
+  background: linear-gradient(180deg, rgba(237, 250, 249, .68), rgba(255, 255, 255, .94));
+}
+
+@media (max-width: 760px) {
+  .open-term-price {
+    min-width: 0;
+    text-align: left;
+  }
+}
