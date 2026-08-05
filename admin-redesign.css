@@ -643,6 +643,31 @@
   align-items: end;
 }
 
+.admin-course-benefits-field {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-course-benefits-list {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-course-benefit-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px;
+  gap: 10px;
+  align-items: center;
+}
+
+.admin-course-benefit-row input {
+  width: 100%;
+}
+
+.admin-add-benefit-btn {
+  justify-self: start;
+}
+
 .admin-package-price-grid {
   display: grid;
   gap: 12px;
